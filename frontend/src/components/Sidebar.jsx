@@ -1,4 +1,4 @@
-export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, sourceCounts, totalCount, bookmarkCount, enterpriseCount }) {
+export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, totalCount, bookmarkCount, enterpriseCount }) {
   return (
     <aside style={{
       padding: '28px 24px',
@@ -14,7 +14,6 @@ export default function Sidebar({ activeDomain, setActiveDomain, activeSource, s
         activeEnterprise={activeEnterprise}
         setActiveEnterprise={setActiveEnterprise}
         domainCounts={domainCounts}
-        sourceCounts={sourceCounts}
         totalCount={totalCount}
         bookmarkCount={bookmarkCount}
         enterpriseCount={enterpriseCount}
@@ -23,7 +22,7 @@ export default function Sidebar({ activeDomain, setActiveDomain, activeSource, s
   )
 }
 
-export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, sourceCounts, totalCount, bookmarkCount, enterpriseCount }) {
+export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, totalCount, bookmarkCount, enterpriseCount }) {
   const domains = ['정보보안', '보안 엔지니어링', 'SecOps', '클라우드 보안']
 
   return (
@@ -64,21 +63,6 @@ export function SidebarContent({ activeDomain, setActiveDomain, activeSource, se
         ))}
       </div>
 
-      <div style={dividerStyle} />
-
-      <div style={sectionStyle}>
-        <div style={labelStyle}>수집 출처</div>
-        <SideItem active={activeSource === 'all'} onClick={() => setActiveSource('all')}>
-          <span>전체</span>
-          <span style={countStyle}>{totalCount}</span>
-        </SideItem>
-        {Object.entries(sourceCounts).map(([src, cnt]) => (
-          <SideItem key={src} active={activeSource === src} onClick={() => setActiveSource(src)}>
-            <span>{src}</span>
-            <span style={countStyle}>{cnt}</span>
-          </SideItem>
-        ))}
-      </div>
 
       <div style={dividerStyle} />
 

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { CompanyLogo, Icon } from '../icons'
 import { domainClass, formatDday, ddayColor } from '../utils'
 
-const GRID = 'minmax(0, 1.7fr) 130px 80px 130px 130px 90px 40px'
+const GRID = 'minmax(0, 1.7fr) 130px 80px 130px 90px 40px'
 
 export function TableHead() {
   return (
@@ -17,7 +17,6 @@ export function TableHead() {
       <div>도메인</div>
       <div>경력</div>
       <div>위치</div>
-      <div>출처</div>
       <div style={{ textAlign: 'right' }}>마감</div>
       <div style={{ textAlign: 'center' }}>★</div>
     </div>
@@ -88,16 +87,6 @@ export default function JobRow({ job, bookmarked, onBookmark }) {
         ) : (
           <span style={{ color: 'var(--text-3)' }}>—</span>
         )}
-      </div>
-
-      {/* Source */}
-      <div>
-        <span style={{
-          fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-2)',
-          background: 'var(--surface-2)', padding: '3px 8px', borderRadius: 4,
-        }}>
-          {job.source}
-        </span>
       </div>
 
       {/* D-day */}

@@ -68,12 +68,6 @@ function HomePage() {
     return c
   }, [jobs])
 
-  const sourceCounts = useMemo(() => {
-    const c = {}
-    jobs.forEach(j => { c[j.source] = (c[j.source] || 0) + 1 })
-    return c
-  }, [jobs])
-
   const bookmarkCount = useMemo(() => jobs.filter(j => bookmarks[j.id]).length, [jobs, bookmarks])
 
   const loadJobs = useCallback(async () => {
@@ -151,7 +145,6 @@ function HomePage() {
             activeEnterprise={activeEnterprise}
             setActiveEnterprise={setActiveEnterprise}
             domainCounts={domainCounts}
-            sourceCounts={sourceCounts}
             totalCount={jobs.length}
             bookmarkCount={bookmarkCount}
             enterpriseCount={enterpriseCount}
@@ -176,7 +169,6 @@ function HomePage() {
                 activeEnterprise={activeEnterprise}
                 setActiveEnterprise={v => { setActiveEnterprise(v); setMobileFiltersOpen(false) }}
                 domainCounts={domainCounts}
-                sourceCounts={sourceCounts}
                 totalCount={jobs.length}
                 bookmarkCount={bookmarkCount}
                 enterpriseCount={enterpriseCount}
