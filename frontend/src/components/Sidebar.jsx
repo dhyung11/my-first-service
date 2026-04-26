@@ -1,4 +1,4 @@
-export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, domainCounts, sourceCounts, totalCount }) {
+export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, domainCounts, sourceCounts, totalCount, bookmarkCount }) {
   return (
     <aside style={{
       padding: '28px 24px',
@@ -14,16 +14,29 @@ export default function Sidebar({ activeDomain, setActiveDomain, activeSource, s
         domainCounts={domainCounts}
         sourceCounts={sourceCounts}
         totalCount={totalCount}
+        bookmarkCount={bookmarkCount}
       />
     </aside>
   )
 }
 
-export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, domainCounts, sourceCounts, totalCount }) {
+export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, domainCounts, sourceCounts, totalCount, bookmarkCount }) {
   const domains = ['정보보안', '보안 엔지니어링', 'SecOps', '클라우드 보안']
 
   return (
     <>
+      <div style={sectionStyle}>
+        <div style={labelStyle}>즐겨찾기</div>
+        <SideItem active={activeSource === 'bookmarked'} onClick={() => setActiveSource(activeSource === 'bookmarked' ? 'all' : 'bookmarked')}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 13 }}>★</span> 즐겨찾기
+          </span>
+          <span style={countStyle}>{bookmarkCount}</span>
+        </SideItem>
+      </div>
+
+      <div style={dividerStyle} />
+
       <div style={sectionStyle}>
         <div style={labelStyle}>도메인</div>
         <SideItem active={activeDomain === 'all'} onClick={() => setActiveDomain('all')}>

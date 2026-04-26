@@ -28,14 +28,17 @@ function HomePage() {
   const [activeSource, setActiveSource] = useState('all')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const [bookmarks, setBookmarks] = useState({})
+  const [bookmarks, setBookmarks] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('bookmarks') || '{}') } catch { return {} }
+  })
   const isMobile = useIsMobile()
 
   const jobs = useMemo(() => rawJobs.map(adaptJob), [rawJobs])
 
   const filtered = useMemo(() => {
     let result = activeDomain === 'all' ? [...jobs] : jobs.filter(j => j.domain === activeDomain)
-    if (activeSource !== 'all') result = result.filter(j => j.source === activeSource)
+    if (activeSource === 'bookmarked') result = result.filter(j => bookmarks[j.id])
+    else if (activeSource !== 'all') result = result.filter(j => j.source === activeSource)
     if (query.trim()) {
       const q = query.toLowerCase()
       result = result.filter(j =>
@@ -62,6 +65,8 @@ function HomePage() {
     return c
   }, [jobs])
 
+  const bookmarkCount = useMemo(() => jobs.filter(j => bookmarks[j.id]).length, [jobs, bookmarks])
+
   const loadJobs = useCallback(async () => {
     try {
       const data = await fetchJobs()
@@ -87,7 +92,12 @@ function HomePage() {
     }
   }
 
-  const toggleBookmark = (id) => setBookmarks(b => ({ ...b, [id]: !b[id] }))
+  const toggleBookmark = (id) => setBookmarks(b => {
+    const next = { ...b, [id]: !b[id] }
+    if (!next[id]) delete next[id]
+    localStorage.setItem('bookmarks', JSON.stringify(next))
+    return next
+  })
 
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -115,6 +125,7 @@ function HomePage() {
             domainCounts={domainCounts}
             sourceCounts={sourceCounts}
             totalCount={jobs.length}
+            bookmarkCount={bookmarkCount}
           />
         )}
 
@@ -136,6 +147,7 @@ function HomePage() {
                 domainCounts={domainCounts}
                 sourceCounts={sourceCounts}
                 totalCount={jobs.length}
+                bookmarkCount={bookmarkCount}
               />
             </div>
           </div>

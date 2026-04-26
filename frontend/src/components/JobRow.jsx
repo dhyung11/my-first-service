@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { CompanyLogo, Icon } from '../icons'
 import { domainClass, formatDday, ddayColor } from '../utils'
 
-const GRID = 'minmax(0, 1.7fr) 130px 80px 130px 130px 90px'
+const GRID = 'minmax(0, 1.7fr) 130px 80px 130px 130px 90px 40px'
 
 export function TableHead() {
   return (
@@ -19,6 +19,7 @@ export function TableHead() {
       <div>위치</div>
       <div>출처</div>
       <div style={{ textAlign: 'right' }}>마감</div>
+      <div style={{ textAlign: 'center' }}>★</div>
     </div>
   )
 }
@@ -100,29 +101,31 @@ export default function JobRow({ job, bookmarked, onBookmark }) {
       </div>
 
       {/* D-day */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+        <span style={{ fontFamily: 'var(--font-en)', fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', color: ddayColor(job.dday) }}>
+          {formatDday(job.dday)}
+        </span>
+        {job.deadline && (
+          <span style={{ fontFamily: 'var(--font-en)', fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>
+            {job.deadline.slice(5).replace('-', '.')}
+          </span>
+        )}
+      </div>
+
+      {/* Bookmark */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <button
           onClick={e => { e.stopPropagation(); onBookmark() }}
           style={{
-            opacity: hover || bookmarked ? 1 : 0,
-            transition: 'opacity 0.12s',
-            padding: 4, display: 'inline-flex',
+            padding: 6, display: 'inline-flex', borderRadius: 'var(--r-sm)',
             color: bookmarked ? 'var(--accent)' : 'var(--text-3)',
+            background: bookmarked ? 'var(--accent-soft)' : 'transparent',
+            transition: 'all 0.12s',
           }}
-          aria-label="북마크"
+          aria-label="즐겨찾기"
         >
           <Icon.Bookmark size={16} filled={bookmarked} />
         </button>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-          <span style={{ fontFamily: 'var(--font-en)', fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', color: ddayColor(job.dday) }}>
-            {formatDday(job.dday)}
-          </span>
-          {job.deadline && (
-            <span style={{ fontFamily: 'var(--font-en)', fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>
-              {job.deadline.slice(5).replace('-', '.')}
-            </span>
-          )}
-        </div>
       </div>
     </li>
   )
