@@ -1,12 +1,22 @@
 import re
 import httpx
 from datetime import date
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from bs4 import BeautifulSoup
 from backend.crawlers.base import BaseCrawler, JobData, BROWSER_HEADERS, fetch_with_retry, polite_sleep
 
 KEYWORDS = ["정보보안", "보안엔지니어", "침해대응"]
 SEARCH_URL = "https://www.saramin.co.kr/zf_user/search"
 BASE_URL = "https://www.saramin.co.kr"
+
+def _normalize_saramin_url(url: str) -> str:
+    """search_uuid 등 트래킹 파라미터를 제거하고 rec_idx만 유지."""
+    parsed = urlparse(url)
+    params = parse_qs(parsed.query)
+    rec_idx = params.get("rec_idx", [""])[0]
+    if rec_idx:
+        return urlunparse(parsed._replace(query=urlencode({"rec_idx": rec_idx})))
+    return url
 
 def _parse_deadline(text: str) -> date | None:
     """'~05/30' 또는 '05/30' 형식의 마감일을 date로 변환."""
@@ -49,7 +59,8 @@ class SaraminCrawler(BaseCrawler):
                 title = title_tag.get_text(strip=True)
                 company = company_tag.get_text(strip=True)
                 href = title_tag.get("href", "")
-                url = f"{BASE_URL}{href}" if href.startswith("/") else href
+                raw_url = f"{BASE_URL}{href}" if href.startswith("/") else href
+                url = _normalize_saramin_url(raw_url)
 
                 # 근무지: 첫 번째 span
                 spans = item.select(".job_condition span")
