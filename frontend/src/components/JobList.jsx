@@ -1,7 +1,26 @@
+import { useState, useEffect, useRef } from 'react'
 import JobRow, { TableHead } from './JobRow'
 import JobCard from './JobCard'
 
+const BATCH = 20
+
 export default function JobList({ jobs, isMobile, bookmarks, onBookmark }) {
+  const [visibleCount, setVisibleCount] = useState(BATCH)
+  const sentinelRef = useRef(null)
+
+  useEffect(() => { setVisibleCount(BATCH) }, [jobs])
+
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisibleCount(n => n + BATCH) },
+      { rootMargin: '200px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [jobs])
+
   if (jobs.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-3)' }}>
@@ -12,18 +31,24 @@ export default function JobList({ jobs, isMobile, bookmarks, onBookmark }) {
     )
   }
 
+  const visible = jobs.slice(0, visibleCount)
+  const hasMore = visibleCount < jobs.length
+
   if (isMobile) {
     return (
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {jobs.map(job => (
-          <JobCard
-            key={job.id}
-            job={job}
-            bookmarked={!!bookmarks[job.id]}
-            onBookmark={() => onBookmark(job.id)}
-          />
-        ))}
-      </ul>
+      <>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {visible.map(job => (
+            <JobCard
+              key={job.id}
+              job={job}
+              bookmarked={!!bookmarks[job.id]}
+              onBookmark={() => onBookmark(job.id)}
+            />
+          ))}
+        </ul>
+        {hasMore && <div ref={sentinelRef} style={{ height: 1 }} />}
+      </>
     )
   }
 
@@ -31,7 +56,7 @@ export default function JobList({ jobs, isMobile, bookmarks, onBookmark }) {
     <>
       <TableHead />
       <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {jobs.map(job => (
+        {visible.map(job => (
           <JobRow
             key={job.id}
             job={job}
@@ -40,6 +65,7 @@ export default function JobList({ jobs, isMobile, bookmarks, onBookmark }) {
           />
         ))}
       </ul>
+      {hasMore && <div ref={sentinelRef} style={{ height: 1 }} />}
     </>
   )
 }
