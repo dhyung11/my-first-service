@@ -62,6 +62,14 @@ async def save_job(db: AsyncSession, job_data: JobData) -> bool:
     ))
     return True
 
+@router.delete("/admin/reset-jobs")
+async def reset_jobs(db: AsyncSession = Depends(get_db)):
+    """임시 엔드포인트: 전체 공고 삭제."""
+    result = await db.execute(delete(Job).returning(Job.id))
+    count = len(result.fetchall())
+    await db.commit()
+    return {"deleted": count}
+
 @router.post("/crawl", response_model=CrawlResult)
 async def crawl_jobs(db: AsyncSession = Depends(get_db)):
     crawlers = [SaraminCrawler(), JobkoreaCrawler(), WantedCrawler()]
