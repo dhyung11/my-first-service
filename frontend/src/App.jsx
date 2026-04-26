@@ -23,7 +23,7 @@ function HomePage() {
   const [crawling, setCrawling] = useState(false)
   const [crawlMsg, setCrawlMsg] = useState('')
   const [query, setQuery] = useState('')
-  const [sort, setSort] = useState('latest')
+  const [sort, setSort] = useState('dday')
   const [activeDomain, setActiveDomain] = useState('all')
   const [activeSource, setActiveSource] = useState('all')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -49,7 +49,12 @@ function HomePage() {
       )
     }
     if (sort === 'latest') result.sort((a, b) => new Date(b.posted) - new Date(a.posted))
-    else if (sort === 'dday') result.sort((a, b) => a.dday - b.dday)
+    else if (sort === 'dday') result.sort((a, b) => {
+      if (a.dday === null && b.dday === null) return 0
+      if (a.dday === null) return 1
+      if (b.dday === null) return -1
+      return a.dday - b.dday
+    })
     return result
   }, [jobs, activeDomain, activeSource, query, sort])
 
