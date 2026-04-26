@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(python -m venv .venv)",
-      "PowerShell(python --version)"
+      "PowerShell(python --version)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(../.venv/Scripts/pytest tests/test_jobs_api.py -v)",
+      "Bash(.venv/Scripts/pytest backend/tests/test_base_crawler.py -v)",
+      "Bash(.venv/Scripts/pytest backend/tests/ -v --ignore=backend/tests/test_crawl_api.py)",
+      "Bash(../.venv/Scripts/python -m pytest tests/test_crawl_api.py -v)",
+      "Bash(../.venv/Scripts/python -m pytest -v)",
+      "Bash(npm run *)",
+      "Bash(git *)"
     ]
   }
 }

@@ -1,43 +1,82 @@
 import { useNavigate } from 'react-router-dom'
+import { CompanyLogo, Icon } from '../icons'
+import { domainClass, formatDday, ddayColor } from '../utils'
 
-const SOURCE_LABELS = { saramin: '사람인', jobkorea: '잡코리아', wanted: 'Wanted' }
-const SOURCE_COLORS = { saramin: '#e8f0fe', jobkorea: '#fce8e6', wanted: '#e6f4ea' }
-
-export default function JobCard({ job }) {
+export default function JobCard({ job, bookmarked, onBookmark }) {
   const navigate = useNavigate()
+
   return (
-    <div
+    <li
       onClick={() => navigate(`/jobs/${job.id}`)}
       style={{
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        padding: '1rem',
-        marginBottom: '0.75rem',
-        cursor: 'pointer',
-        transition: 'box-shadow 0.2s',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--r-lg)',
+        padding: 14,
+        display: 'flex', flexDirection: 'column', gap: 10,
+        cursor: 'pointer', listStyle: 'none',
       }}
-      onMouseOver={e => e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'}
-      onMouseOut={e => e.currentTarget.style.boxShadow = 'none'}
     >
-      <h3 style={{ margin: '0 0 0.4rem' }}>{job.title}</h3>
-      <p style={{ margin: '0 0 0.5rem', color: '#555' }}>
-        {job.company} · {job.location || '위치 미상'}
-      </p>
-      <div>
-        <span style={{
-          background: SOURCE_COLORS[job.source] || '#f0f0f0',
-          padding: '2px 8px',
-          borderRadius: '4px',
-          fontSize: '0.8rem',
-        }}>
-          {SOURCE_LABELS[job.source] || job.source}
+      {/* Head */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+        <CompanyLogo company={job.companyShort} color={job.logoColor} size={32} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 1 }}>
+            <span style={{ fontSize: 11.5, color: 'var(--text-2)', fontWeight: 500 }}>{job.company}</span>
+            {job.isNew && (
+              <span style={{
+                fontFamily: 'var(--font-en)', fontSize: 9, fontWeight: 700,
+                letterSpacing: '0.04em', color: 'var(--new)', background: 'var(--new-soft)',
+                padding: '1px 4px', borderRadius: 3,
+              }}>NEW</span>
+            )}
+          </div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em', lineHeight: 1.35 }}>
+            {job.title}
+          </div>
+        </div>
+        <button
+          onClick={e => { e.stopPropagation(); onBookmark() }}
+          style={{ color: bookmarked ? 'var(--accent)' : 'var(--text-3)', padding: 4, flexShrink: 0 }}
+          aria-label="북마크"
+        >
+          <Icon.Bookmark size={16} filled={bookmarked} />
+        </button>
+      </div>
+
+      {/* Pills */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+        <span className={domainClass(job.domainEn)} style={{ fontSize: 11.5, fontWeight: 500, padding: '3px 8px', borderRadius: 999, display: 'inline-block' }}>
+          {job.domain}
         </span>
-        {job.deadline && (
-          <span style={{ marginLeft: '0.75rem', fontSize: '0.85rem', color: '#888' }}>
-            마감: {job.deadline}
-          </span>
+        {job.expYears > 0 && <span style={{ fontSize: 11.5, color: 'var(--text-3)', fontFamily: 'var(--font-en)' }}>{job.expYears}년+</span>}
+        {job.location && (
+          <>
+            <span style={{ color: 'var(--border-strong)', fontSize: 11 }}>·</span>
+            <span style={{ fontSize: 11.5, color: 'var(--text-3)', fontFamily: 'var(--font-en)' }}>{job.location}</span>
+          </>
         )}
       </div>
-    </div>
+
+      {/* Bottom */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: 8, borderTop: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-2)', background: 'var(--surface-2)', padding: '3px 8px', borderRadius: 4 }}>
+            {job.source}
+          </span>
+          <span style={{ fontFamily: 'var(--font-en)', fontSize: 12, color: 'var(--text-2)' }}>{job.salary}</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+          <span style={{ fontFamily: 'var(--font-en)', fontSize: 13, fontWeight: 700, letterSpacing: '-0.02em', color: ddayColor(job.dday) }}>
+            {formatDday(job.dday)}
+          </span>
+          {job.deadline && (
+            <span style={{ fontFamily: 'var(--font-en)', fontSize: 10.5, color: 'var(--text-3)' }}>
+              {job.deadline.slice(5).replace('-', '.')}
+            </span>
+          )}
+        </div>
+      </div>
+    </li>
   )
 }
