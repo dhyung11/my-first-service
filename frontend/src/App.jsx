@@ -206,6 +206,20 @@ function HomePage() {
           )}
         </main>
       </div>
+
+      <footer style={{
+        borderTop: '1px solid var(--border)',
+        background: 'var(--surface)',
+        padding: '20px 36px',
+        textAlign: 'center',
+      }}>
+        <p style={{ margin: 0, fontSize: 12, color: 'var(--text-3)', lineHeight: 1.8 }}>
+          본 서비스는 개인 용도의 비영리 채용 공고 모니터링 도구입니다.
+          방문자의 개인정보 및 행동 데이터를 일체 수집하지 않습니다.
+          <br />
+          수집된 채용 공고의 저작권은 각 원본 게시처에 있으며, 상업적 이용을 금합니다.
+        </p>
+      </footer>
     </div>
   )
 }
