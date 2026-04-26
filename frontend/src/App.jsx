@@ -60,7 +60,7 @@ function HomePage() {
       return a.dday - b.dday
     })
     return result
-  }, [jobs, activeDomain, activeSource, query, sort])
+  }, [jobs, activeDomain, activeSource, activeEnterprise, bookmarks, query, sort])
 
   const domainCounts = useMemo(() => {
     const c = {}
