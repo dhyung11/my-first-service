@@ -1,7 +1,8 @@
 import httpx
+from datetime import date
 from backend.crawlers.base import BaseCrawler, JobData, BROWSER_HEADERS, fetch_with_retry, polite_sleep
 
-KEYWORDS = ["보안", "security"]
+KEYWORDS = ["정보보안", "보안관제", "보안엔지니어"]
 API_URL = "https://www.wanted.co.kr/api/v4/jobs"
 
 class WantedCrawler(BaseCrawler):
@@ -17,7 +18,8 @@ class WantedCrawler(BaseCrawler):
                 resp = await fetch_with_retry(client, API_URL, params={
                     "job_sort": "job.latest_order",
                     "limit": 20,
-                    "tag_type_names": keyword,
+                    "country": "kr",
+                    "query": keyword,
                 })
                 if resp is not None:
                     for item in resp.json().get("data", []):
@@ -33,6 +35,11 @@ class WantedCrawler(BaseCrawler):
             company = item["company"]["name"]
             url = f"https://www.wanted.co.kr/wd/{job_id}"
             location = item.get("address", {}).get("location")
-            return JobData(title=title, company=company, url=url, source="wanted", location=location)
-        except (KeyError, TypeError):
+            due_time = item.get("due_time")
+            deadline = date.fromisoformat(due_time[:10]) if due_time else None
+            return JobData(
+                title=title, company=company, url=url, source="wanted",
+                location=location, deadline=deadline,
+            )
+        except (KeyError, TypeError, ValueError):
             return None
