@@ -61,7 +61,9 @@ export default function Header({
             whiteSpace: 'nowrap',
           }}
         >
-          <Icon.Refresh size={14} />
+          <span className={crawling ? 'spin' : ''} style={{ display: 'inline-flex' }}>
+            <Icon.Refresh size={14} />
+          </span>
           {!isMobile && (crawling ? '수집 중...' : '수집 시작')}
         </button>
       </div>

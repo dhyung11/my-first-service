@@ -112,10 +112,27 @@ function HomePage() {
       />
 
       <div style={{
-        display: 'grid', flex: 1, minHeight: 0,
+        display: 'grid', flex: 1, minHeight: 0, position: 'relative',
         gridTemplateColumns: isMobile ? '1fr' : (sidebarCollapsed ? '0px 1fr' : '240px 1fr'),
         transition: 'grid-template-columns 0.25s ease',
       }}>
+        {crawling && (
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 30,
+            background: 'rgba(250,250,249,0.75)',
+            backdropFilter: 'blur(2px)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14,
+            pointerEvents: 'all',
+          }}>
+            <span className="spin" style={{ display: 'inline-flex', color: 'var(--accent)' }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+            </span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-2)' }}>공고 수집 중...</span>
+            <span style={{ fontSize: 12, color: 'var(--text-3)' }}>사람인·원티드에서 최신 공고를 가져오고 있습니다</span>
+          </div>
+        )}
         {!isMobile && !sidebarCollapsed && (
           <Sidebar
             activeDomain={activeDomain}
