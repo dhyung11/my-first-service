@@ -1,4 +1,4 @@
-export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, domainCounts, sourceCounts, totalCount, bookmarkCount }) {
+export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, sourceCounts, totalCount, bookmarkCount, enterpriseCount }) {
   return (
     <aside style={{
       padding: '28px 24px',
@@ -11,16 +11,19 @@ export default function Sidebar({ activeDomain, setActiveDomain, activeSource, s
         setActiveDomain={setActiveDomain}
         activeSource={activeSource}
         setActiveSource={setActiveSource}
+        activeEnterprise={activeEnterprise}
+        setActiveEnterprise={setActiveEnterprise}
         domainCounts={domainCounts}
         sourceCounts={sourceCounts}
         totalCount={totalCount}
         bookmarkCount={bookmarkCount}
+        enterpriseCount={enterpriseCount}
       />
     </aside>
   )
 }
 
-export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, domainCounts, sourceCounts, totalCount, bookmarkCount }) {
+export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, sourceCounts, totalCount, bookmarkCount, enterpriseCount }) {
   const domains = ['정보보안', '보안 엔지니어링', 'SecOps', '클라우드 보안']
 
   return (
@@ -32,6 +35,16 @@ export function SidebarContent({ activeDomain, setActiveDomain, activeSource, se
             <span style={{ fontSize: 13 }}>★</span> 즐겨찾기
           </span>
           <span style={countStyle}>{bookmarkCount}</span>
+        </SideItem>
+      </div>
+
+      <div style={dividerStyle} />
+
+      <div style={sectionStyle}>
+        <div style={labelStyle}>기업 규모</div>
+        <SideItem active={activeEnterprise} onClick={() => setActiveEnterprise(!activeEnterprise)}>
+          <span>대기업</span>
+          <span style={countStyle}>{enterpriseCount}</span>
         </SideItem>
       </div>
 

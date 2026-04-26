@@ -26,6 +26,7 @@ function HomePage() {
   const [sort, setSort] = useState('dday')
   const [activeDomain, setActiveDomain] = useState('all')
   const [activeSource, setActiveSource] = useState('all')
+  const [activeEnterprise, setActiveEnterprise] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [bookmarks, setBookmarks] = useState(() => {
@@ -35,10 +36,13 @@ function HomePage() {
 
   const jobs = useMemo(() => rawJobs.map(adaptJob), [rawJobs])
 
+  const enterpriseCount = useMemo(() => jobs.filter(j => j.enterprise).length, [jobs])
+
   const filtered = useMemo(() => {
     let result = activeDomain === 'all' ? [...jobs] : jobs.filter(j => j.domain === activeDomain)
     if (activeSource === 'bookmarked') result = result.filter(j => bookmarks[j.id])
     else if (activeSource !== 'all') result = result.filter(j => j.source === activeSource)
+    if (activeEnterprise) result = result.filter(j => j.enterprise)
     if (query.trim()) {
       const q = query.toLowerCase()
       result = result.filter(j =>
@@ -144,10 +148,13 @@ function HomePage() {
             setActiveDomain={setActiveDomain}
             activeSource={activeSource}
             setActiveSource={setActiveSource}
+            activeEnterprise={activeEnterprise}
+            setActiveEnterprise={setActiveEnterprise}
             domainCounts={domainCounts}
             sourceCounts={sourceCounts}
             totalCount={jobs.length}
             bookmarkCount={bookmarkCount}
+            enterpriseCount={enterpriseCount}
           />
         )}
 
@@ -166,10 +173,13 @@ function HomePage() {
                 setActiveDomain={d => { setActiveDomain(d); setMobileFiltersOpen(false) }}
                 activeSource={activeSource}
                 setActiveSource={s => { setActiveSource(s); setMobileFiltersOpen(false) }}
+                activeEnterprise={activeEnterprise}
+                setActiveEnterprise={v => { setActiveEnterprise(v); setMobileFiltersOpen(false) }}
                 domainCounts={domainCounts}
                 sourceCounts={sourceCounts}
                 totalCount={jobs.length}
                 bookmarkCount={bookmarkCount}
+                enterpriseCount={enterpriseCount}
               />
             </div>
           </div>

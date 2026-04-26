@@ -1,5 +1,21 @@
 const SOURCE_MAP = { saramin: '사람인', jobkorea: '잡코리아', wanted: '원티드' };
 
+const ENTERPRISE_PATTERNS = [
+  /삼성/,
+  /SK(?:텔레콤|하이닉스|이노베이션|브로드밴드)?/,
+  /LG(?:전자|유플러스|U\+|CNS|이노텍)?/,
+  /\bKT\b/,
+  /현대(?:자동차|모비스|오토에버|카드|캐피탈)?/,
+  /카카오/,
+  /네이버/,
+  /롯데/,
+  /포스코/,
+];
+
+export function isEnterprise(company) {
+  return ENTERPRISE_PATTERNS.some(p => p.test(company));
+}
+
 export function domainClass(en) {
   if (en === 'Cloud') return 'domain-cloud';
   if (en === 'SecOps' || en === 'DevSecOps') return 'domain-secops';
@@ -92,5 +108,6 @@ export function adaptJob(job) {
     isNew: isNewJob(job.created_at),
     tags: extractTags(job.title),
     remote: '출근',
+    enterprise: isEnterprise(job.company),
   };
 }
