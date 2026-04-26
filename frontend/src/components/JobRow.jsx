@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { CompanyLogo, Icon } from '../icons'
 import { domainClass, formatDday, ddayColor } from '../utils'
 
@@ -26,11 +25,10 @@ export function TableHead() {
 
 export default function JobRow({ job, bookmarked, onBookmark }) {
   const [hover, setHover] = useState(false)
-  const navigate = useNavigate()
 
   return (
     <li
-      onClick={() => navigate(`/jobs/${job.id}`)}
+      onClick={() => window.open(job.url, '_blank', 'noopener,noreferrer')}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{

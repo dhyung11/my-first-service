@@ -1,13 +1,10 @@
-import { useNavigate } from 'react-router-dom'
 import { CompanyLogo, Icon } from '../icons'
 import { domainClass, formatDday, ddayColor } from '../utils'
 
 export default function JobCard({ job, bookmarked, onBookmark }) {
-  const navigate = useNavigate()
-
   return (
     <li
-      onClick={() => navigate(`/jobs/${job.id}`)}
+      onClick={() => window.open(job.url, '_blank', 'noopener,noreferrer')}
       style={{
         background: 'var(--surface)',
         border: '1px solid var(--border)',
