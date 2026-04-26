@@ -8,11 +8,13 @@ export function domainClass(en) {
 }
 
 export function formatDday(d) {
+  if (d === null || d === undefined) return '상시';
   if (d <= 0) return '마감';
   return `D-${d}`;
 }
 
 export function ddayColor(d) {
+  if (d === null || d === undefined) return 'var(--text-3)';
   if (d <= 3) return 'var(--urgent)';
   if (d <= 7) return '#C77A0E';
   return 'var(--text-2)';
@@ -43,10 +45,18 @@ function getLogoColor(company) {
 }
 
 function calcDday(deadline) {
-  if (!deadline) return 30;
+  if (!deadline) return null;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return Math.ceil((new Date(deadline) - today) / 86400000);
+}
+
+function extractExpYears(title) {
+  const m =
+    title.match(/경력\s*(\d+)년/) ||
+    title.match(/(\d+)년\s*(?:이상|경력|~)/) ||
+    title.match(/(\d+)\+?\s*(?:years?|yrs?)/i);
+  return m ? parseInt(m[1], 10) : 0;
 }
 
 function isNewJob(createdAt) {
@@ -73,7 +83,7 @@ export function adaptJob(job) {
     logoColor: getLogoColor(job.company),
     domain,
     domainEn,
-    expYears: 0,
+    expYears: extractExpYears(job.title),
     salary: '협의',
     salaryNum: 0,
     dday,

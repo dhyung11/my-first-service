@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -10,7 +11,10 @@ from backend.crawlers.saramin import SaraminCrawler
 from backend.crawlers.jobkorea import JobkoreaCrawler
 from backend.crawlers.wanted import WantedCrawler
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["crawl"])
+
+CRAWLER_NAMES = ["saramin", "jobkorea", "wanted"]
 
 async def save_job(db: AsyncSession, job_data: JobData) -> bool:
     exists = (await db.execute(select(Job.id).where(Job.url == job_data.url))).scalar_one_or_none()
@@ -33,9 +37,16 @@ async def crawl_jobs(db: AsyncSession = Depends(get_db)):
     results = await asyncio.gather(*[c.fetch() for c in crawlers], return_exceptions=True)
 
     all_jobs: list[JobData] = []
-    for result in results:
+    source_counts: dict[str, int] = {}
+    errors: list[str] = []
+
+    for name, result in zip(CRAWLER_NAMES, results):
         if isinstance(result, list):
+            source_counts[name] = len(result)
             all_jobs.extend(result)
+        else:
+            logger.error("Crawler %s failed: %s", name, result)
+            errors.append(name)
 
     new_count = 0
     for job_data in all_jobs:
@@ -43,4 +54,9 @@ async def crawl_jobs(db: AsyncSession = Depends(get_db)):
             new_count += 1
 
     await db.commit()
-    return CrawlResult(new_jobs=new_count, message=f"{new_count}개의 새 공고를 수집했습니다.")
+
+    parts = [f"{n}:{c}" for n, c in source_counts.items()]
+    summary = f"({', '.join(parts)})" if parts else ""
+    error_note = f" | 실패: {', '.join(errors)}" if errors else ""
+    message = f"{new_count}개의 새 공고를 수집했습니다. {summary}{error_note}"
+    return CrawlResult(new_jobs=new_count, message=message)
