@@ -1,8 +1,9 @@
 import asyncio
 import logging
+from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, delete, or_, and_
 from backend.database import get_db
 from backend.models import Job
 from backend.schemas import CrawlResult
@@ -15,6 +16,22 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["crawl"])
 
 CRAWLER_NAMES = ["saramin", "jobkorea", "wanted"]
+
+STALE_DAYS = 60  # 상시 공고 보관 기간
+
+async def cleanup_old_jobs(db: AsyncSession) -> int:
+    """마감 지난 공고 + 60일 이상 된 상시 공고 삭제."""
+    today = date.today()
+    cutoff = datetime.now() - timedelta(days=STALE_DAYS)
+    result = await db.execute(
+        delete(Job).where(
+            or_(
+                and_(Job.deadline != None, Job.deadline < today),       # 마감 지난 공고
+                and_(Job.deadline == None, Job.created_at < cutoff),    # 오래된 상시 공고
+            )
+        ).returning(Job.id)
+    )
+    return len(result.fetchall())
 
 async def save_job(db: AsyncSession, job_data: JobData) -> bool:
     exists = (await db.execute(select(Job.id).where(Job.url == job_data.url))).scalar_one_or_none()
@@ -48,6 +65,10 @@ async def crawl_jobs(db: AsyncSession = Depends(get_db)):
             logger.error("Crawler %s failed: %s", name, result)
             errors.append(name)
 
+    deleted_count = await cleanup_old_jobs(db)
+    if deleted_count:
+        logger.info("Cleaned up %d expired/stale jobs", deleted_count)
+
     new_count = 0
     for job_data in all_jobs:
         if await save_job(db, job_data):
@@ -58,5 +79,6 @@ async def crawl_jobs(db: AsyncSession = Depends(get_db)):
     parts = [f"{n}:{c}" for n, c in source_counts.items()]
     summary = f"({', '.join(parts)})" if parts else ""
     error_note = f" | 실패: {', '.join(errors)}" if errors else ""
-    message = f"{new_count}개의 새 공고를 수집했습니다. {summary}{error_note}"
+    cleanup_note = f" | 만료 삭제: {deleted_count}건" if deleted_count else ""
+    message = f"{new_count}개의 새 공고를 수집했습니다. {summary}{error_note}{cleanup_note}"
     return CrawlResult(new_jobs=new_count, message=message)
