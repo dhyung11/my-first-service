@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import re
 from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +15,19 @@ from backend.crawlers.wanted import WantedCrawler
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["crawl"])
+
+# 제목·설명에 아래 키워드 중 하나라도 없으면 저장 안 함
+_SECURITY_RE = re.compile(
+    r'정보보안|정보보호|사이버|보안엔지니어|보안관제|보안운영|침해대응|취약점|'
+    r'모의해킹|pentest|악성코드|포렌식|버그바운티|'
+    r'isms|iso\s*27001|ciso|soc\b|siem|edr|waf|ids|ips|'
+    r'devsecops|appsec|클라우드\s*보안|개인정보\s*보호|privacy',
+    re.IGNORECASE,
+)
+
+def _is_security_job(title: str, description: str | None) -> bool:
+    text = f"{title} {description or ''}"
+    return bool(_SECURITY_RE.search(text))
 
 CRAWLER_NAMES = ["saramin", "jobkorea", "wanted"]
 
@@ -70,9 +84,16 @@ async def crawl_jobs(db: AsyncSession = Depends(get_db)):
         logger.info("Cleaned up %d expired/stale jobs", deleted_count)
 
     new_count = 0
+    skipped = 0
     for job_data in all_jobs:
+        if not _is_security_job(job_data.title, job_data.description):
+            skipped += 1
+            continue
         if await save_job(db, job_data):
             new_count += 1
+
+    if skipped:
+        logger.info("Skipped %d non-security jobs", skipped)
 
     await db.commit()
 
