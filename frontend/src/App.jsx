@@ -118,7 +118,7 @@ function HomePage() {
 
       <div style={{
         display: 'grid', flex: 1, minHeight: 0, position: 'relative',
-        gridTemplateColumns: isMobile ? '1fr' : (sidebarCollapsed ? '0px 1fr' : '240px 1fr'),
+        gridTemplateColumns: isMobile ? '1fr' : (sidebarCollapsed ? '1fr' : '240px 1fr'),
         transition: 'grid-template-columns 0.25s ease',
       }}>
         {crawling && (
