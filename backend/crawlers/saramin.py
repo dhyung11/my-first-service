@@ -9,7 +9,7 @@ KEYWORDS = [
     "정보보안", "보안엔지니어", "침해대응",
     # 대기업 보안 공고
     "삼성 보안", "SK 보안", "LG 보안", "KT 보안",
-    "현대 보안", "카카오 보안", "네이버 보안", "롯데 보안", "포스코 보안",
+    "현대 보안", "기아 보안", "카카오 보안", "네이버 보안", "롯데 보안", "포스코 보안",
 ]
 SEARCH_URL = "https://www.saramin.co.kr/zf_user/search"
 BASE_URL = "https://www.saramin.co.kr"
