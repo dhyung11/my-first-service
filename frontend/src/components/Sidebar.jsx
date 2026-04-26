@@ -1,4 +1,4 @@
-export default function Sidebar({ activeDomain, setActiveDomain, domainCounts, sourceCounts, totalCount }) {
+export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, domainCounts, sourceCounts, totalCount }) {
   return (
     <aside style={{
       padding: '28px 24px',
@@ -9,6 +9,8 @@ export default function Sidebar({ activeDomain, setActiveDomain, domainCounts, s
       <SidebarContent
         activeDomain={activeDomain}
         setActiveDomain={setActiveDomain}
+        activeSource={activeSource}
+        setActiveSource={setActiveSource}
         domainCounts={domainCounts}
         sourceCounts={sourceCounts}
         totalCount={totalCount}
@@ -17,7 +19,7 @@ export default function Sidebar({ activeDomain, setActiveDomain, domainCounts, s
   )
 }
 
-export function SidebarContent({ activeDomain, setActiveDomain, domainCounts, sourceCounts, totalCount }) {
+export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, domainCounts, sourceCounts, totalCount }) {
   const domains = ['정보보안', '보안 엔지니어링', 'SecOps', '클라우드 보안']
 
   return (
@@ -40,11 +42,15 @@ export function SidebarContent({ activeDomain, setActiveDomain, domainCounts, so
 
       <div style={sectionStyle}>
         <div style={labelStyle}>수집 출처</div>
+        <SideItem active={activeSource === 'all'} onClick={() => setActiveSource('all')}>
+          <span>전체</span>
+          <span style={countStyle}>{totalCount}</span>
+        </SideItem>
         {Object.entries(sourceCounts).map(([src, cnt]) => (
-          <div key={src} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 10px', fontSize: 12.5 }}>
-            <span style={{ color: 'var(--text-2)' }}>{src}</span>
-            <span style={{ fontFamily: 'var(--font-en)', fontSize: 11.5, color: 'var(--text-3)' }}>{cnt}</span>
-          </div>
+          <SideItem key={src} active={activeSource === src} onClick={() => setActiveSource(src)}>
+            <span>{src}</span>
+            <span style={countStyle}>{cnt}</span>
+          </SideItem>
         ))}
       </div>
 

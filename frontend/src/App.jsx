@@ -25,6 +25,7 @@ function HomePage() {
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState('latest')
   const [activeDomain, setActiveDomain] = useState('all')
+  const [activeSource, setActiveSource] = useState('all')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [bookmarks, setBookmarks] = useState({})
@@ -34,6 +35,7 @@ function HomePage() {
 
   const filtered = useMemo(() => {
     let result = activeDomain === 'all' ? [...jobs] : jobs.filter(j => j.domain === activeDomain)
+    if (activeSource !== 'all') result = result.filter(j => j.source === activeSource)
     if (query.trim()) {
       const q = query.toLowerCase()
       result = result.filter(j =>
@@ -46,7 +48,7 @@ function HomePage() {
     if (sort === 'latest') result.sort((a, b) => new Date(b.posted) - new Date(a.posted))
     else if (sort === 'dday') result.sort((a, b) => a.dday - b.dday)
     return result
-  }, [jobs, activeDomain, query, sort])
+  }, [jobs, activeDomain, activeSource, query, sort])
 
   const domainCounts = useMemo(() => {
     const c = {}
@@ -108,6 +110,8 @@ function HomePage() {
           <Sidebar
             activeDomain={activeDomain}
             setActiveDomain={setActiveDomain}
+            activeSource={activeSource}
+            setActiveSource={setActiveSource}
             domainCounts={domainCounts}
             sourceCounts={sourceCounts}
             totalCount={jobs.length}
@@ -127,6 +131,8 @@ function HomePage() {
               <SidebarContent
                 activeDomain={activeDomain}
                 setActiveDomain={d => { setActiveDomain(d); setMobileFiltersOpen(false) }}
+                activeSource={activeSource}
+                setActiveSource={s => { setActiveSource(s); setMobileFiltersOpen(false) }}
                 domainCounts={domainCounts}
                 sourceCounts={sourceCounts}
                 totalCount={jobs.length}
