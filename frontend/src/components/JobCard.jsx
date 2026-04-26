@@ -60,12 +60,9 @@ export default function JobCard({ job, bookmarked, onBookmark }) {
 
       {/* Bottom */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: 8, borderTop: '1px solid var(--border)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-2)', background: 'var(--surface-2)', padding: '3px 8px', borderRadius: 4 }}>
-            {job.source}
-          </span>
-          <span style={{ fontFamily: 'var(--font-en)', fontSize: 12, color: 'var(--text-2)' }}>{job.salary}</span>
-        </div>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-2)', background: 'var(--surface-2)', padding: '3px 8px', borderRadius: 4 }}>
+          {job.source}
+        </span>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
           <span style={{ fontFamily: 'var(--font-en)', fontSize: 13, fontWeight: 700, letterSpacing: '-0.02em', color: ddayColor(job.dday) }}>
             {formatDday(job.dday)}

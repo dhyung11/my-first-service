@@ -17,7 +17,7 @@ export function TableHead() {
       <div>회사 / 직무</div>
       <div>도메인</div>
       <div>경력</div>
-      <div>연봉</div>
+      <div>위치</div>
       <div>출처</div>
       <div style={{ textAlign: 'right' }}>마감</div>
     </div>
@@ -63,11 +63,6 @@ export default function JobRow({ job, bookmarked, onBookmark }) {
                 {t}{i < Math.min(job.tags.length, 3) - 1 && <span style={{ marginLeft: 6, color: 'var(--border-strong)' }}>·</span>}
               </span>
             ))}
-            {job.location && (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11.5, color: 'var(--text-3)', marginLeft: 4 }}>
-                <Icon.Pin size={11} /> {job.location}
-              </span>
-            )}
           </div>
         </div>
       </div>
@@ -84,9 +79,16 @@ export default function JobRow({ job, bookmarked, onBookmark }) {
         {job.expYears > 0 ? `${job.expYears}년+` : '무관'}
       </div>
 
-      {/* Salary */}
-      <div style={{ fontFamily: 'var(--font-en)', fontSize: 13, color: 'var(--text)', fontWeight: 500 }}>
-        {job.salary}
+      {/* Location */}
+      <div style={{ fontSize: 13, color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: 4 }}>
+        {job.location ? (
+          <>
+            <Icon.Pin size={12} />
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{job.location}</span>
+          </>
+        ) : (
+          <span style={{ color: 'var(--text-3)' }}>—</span>
+        )}
       </div>
 
       {/* Source */}
