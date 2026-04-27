@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { fetchResume, fetchProtectedFile } from '../api'
 import { Icon } from '../icons'
+import { useIsMobile } from '../utils'
 
 /* ── data helpers ─────────────────────────────────────── */
 
@@ -367,7 +368,7 @@ function CertSection({ items }) {
   return (
     <div>
       <SectionHeader title="자격증" count={items.length} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      <div className="grid-2col" style={{ gap: 10 }}>
         {items.map((c, i) => (
           <div key={c.id || i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', padding: '16px 18px' }}>
             <div style={{ width: 38, height: 38, borderRadius: 8, background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🏅</div>
@@ -466,6 +467,7 @@ export default function ResumePage() {
   const { user, token, loading: authLoading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const isMobile = useIsMobile()
   const [resume, setResume] = useState(null)
   const [loading, setLoading] = useState(true)
   const [photoUrl, setPhotoUrl] = useState(null)
@@ -532,36 +534,42 @@ export default function ResumePage() {
       )}
 
       {/* Header */}
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 28px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
+      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '12px 16px' : '14px 28px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-2)', fontWeight: 500, padding: '6px 10px', borderRadius: 'var(--r-sm)', textDecoration: 'none' }}>
-            <Icon.Back /> 채용 공고
+            <Icon.Back /> {!isMobile && '채용 공고'}
           </Link>
-          <span style={{ color: 'var(--text-3)' }}>/</span>
-          <span style={{ color: 'var(--accent)', display: 'flex' }}><Icon.Logo size={18} /></span>
-          <span style={{ fontSize: 14, color: 'var(--text-2)', fontWeight: 500 }}>내 이력서</span>
+          {!isMobile && (
+            <>
+              <span style={{ color: 'var(--text-3)' }}>/</span>
+              <span style={{ color: 'var(--accent)', display: 'flex' }}><Icon.Logo size={18} /></span>
+              <span style={{ fontSize: 14, color: 'var(--text-2)', fontWeight: 500 }}>내 이력서</span>
+            </>
+          )}
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <span style={{ fontSize: 12, color: 'var(--text-3)', marginRight: 6 }}>최근 수정 {relativeTime(resume.updatedAt)}</span>
-          <button
-            onClick={() => { setToast('PDF 내보내기는 준비 중입니다.'); setTimeout(() => setToast(''), 2000) }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', padding: '9px 14px', borderRadius: 'var(--r-md)' }}
-          >
-            <Icon.Download size={13} /> PDF 내보내기
-          </button>
-          <Link to="/resume/edit" state={{ section: active }} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#FFF', background: 'var(--accent)', padding: '9px 14px', borderRadius: 'var(--r-md)', textDecoration: 'none' }}>
-            <Icon.Edit /> 이력서 수정
+          {!isMobile && <span style={{ fontSize: 12, color: 'var(--text-3)', marginRight: 6 }}>최근 수정 {relativeTime(resume.updatedAt)}</span>}
+          {!isMobile && (
+            <button
+              onClick={() => { setToast('PDF 내보내기는 준비 중입니다.'); setTimeout(() => setToast(''), 2000) }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', padding: '9px 14px', borderRadius: 'var(--r-md)' }}
+            >
+              <Icon.Download size={13} /> PDF 내보내기
+            </button>
+          )}
+          <Link to="/resume/edit" state={{ section: active }} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#FFF', background: 'var(--accent)', padding: isMobile ? '9px 12px' : '9px 14px', borderRadius: 'var(--r-md)', textDecoration: 'none' }}>
+            <Icon.Edit /> {!isMobile && '이력서 수정'}
           </Link>
         </div>
       </header>
 
       {/* Profile bar */}
-      <section style={{ display: 'flex', alignItems: 'center', gap: 28, padding: '32px 36px', background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
-        <PhotoPlaceholder name={resume.name} size={96} photoUrl={photoUrl} />
+      <section style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', gap: isMobile ? 14 : 28, padding: isMobile ? '20px 16px' : '32px 36px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' }}>
+        <PhotoPlaceholder name={resume.name} size={isMobile ? 64 : 96} photoUrl={photoUrl} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
-            <h1 style={{ fontSize: 30, fontWeight: 700, letterSpacing: '-0.025em', margin: 0 }}>{resume.name}</h1>
-            {resume.nameEn && <span style={{ fontFamily: 'var(--font-en)', fontSize: 16, color: 'var(--text-3)', fontWeight: 500 }}>{resume.nameEn}</span>}
+            <h1 style={{ fontSize: isMobile ? 24 : 30, fontWeight: 700, letterSpacing: '-0.025em', margin: 0 }}>{resume.name}</h1>
+            {resume.nameEn && <span style={{ fontFamily: 'var(--font-en)', fontSize: 14, color: 'var(--text-3)', fontWeight: 500 }}>{resume.nameEn}</span>}
             {careerSummary && (
               <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent)', background: 'var(--accent-soft)', padding: '3px 10px', borderRadius: 999 }}>
                 경력 {careerSummary}
@@ -575,23 +583,36 @@ export default function ResumePage() {
             {resume.address && <MetaChip icon="◉" value={resume.address.split(' ').slice(0, 2).join(' ')} />}
           </div>
         </div>
-        <CompletenessRing pct={completeness} />
+        {!isMobile && <CompletenessRing pct={completeness} />}
       </section>
 
       {/* Body */}
-      <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: 600 }}>
-        <aside style={{ padding: '24px 16px', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--surface)' }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-3)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '0 12px', marginBottom: 10 }}>이력서 섹션</div>
-          {sections.map(s => (
-            <button key={s.id} onClick={() => setActive(s.id)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 'var(--r-sm)', fontSize: 13.5, color: active === s.id ? 'var(--accent)' : 'var(--text-2)', fontWeight: active === s.id ? 600 : 500, width: '100%', background: active === s.id ? 'var(--accent-soft)' : 'transparent' }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: active === s.id ? 'var(--accent)' : (s.filled ? 'var(--new)' : 'var(--border-strong)'), flexShrink: 0 }} />
-              <span style={{ flex: 1, textAlign: 'left' }}>{s.label}</span>
-              {s.count !== undefined && <span style={{ fontFamily: 'var(--font-en)', fontSize: 11.5, color: 'var(--text-3)', fontWeight: 500 }}>{s.count}</span>}
-            </button>
-          ))}
-        </aside>
+      <div style={isMobile ? {} : { display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: 600 }}>
+        {isMobile ? (
+          <div style={{ overflowX: 'auto', borderBottom: '1px solid var(--border)', background: 'var(--surface)', WebkitOverflowScrolling: 'touch' }}>
+            <div style={{ display: 'flex', padding: '0 8px', minWidth: 'max-content' }}>
+              {sections.map(s => (
+                <button key={s.id} onClick={() => setActive(s.id)} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '10px 12px', fontSize: 13, fontWeight: active === s.id ? 600 : 500, color: active === s.id ? 'var(--accent)' : 'var(--text-2)', borderBottom: `2px solid ${active === s.id ? 'var(--accent)' : 'transparent'}`, whiteSpace: 'nowrap', background: 'transparent' }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: active === s.id ? 'var(--accent)' : (s.filled ? 'var(--new)' : 'var(--border-strong)'), flexShrink: 0 }} />
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <aside style={{ padding: '24px 16px', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--surface)' }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-3)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '0 12px', marginBottom: 10 }}>이력서 섹션</div>
+            {sections.map(s => (
+              <button key={s.id} onClick={() => setActive(s.id)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 'var(--r-sm)', fontSize: 13.5, color: active === s.id ? 'var(--accent)' : 'var(--text-2)', fontWeight: active === s.id ? 600 : 500, width: '100%', background: active === s.id ? 'var(--accent-soft)' : 'transparent' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: active === s.id ? 'var(--accent)' : (s.filled ? 'var(--new)' : 'var(--border-strong)'), flexShrink: 0 }} />
+                <span style={{ flex: 1, textAlign: 'left' }}>{s.label}</span>
+                {s.count !== undefined && <span style={{ fontFamily: 'var(--font-en)', fontSize: 11.5, color: 'var(--text-3)', fontWeight: 500 }}>{s.count}</span>}
+              </button>
+            ))}
+          </aside>
+        )}
 
-        <main style={{ padding: '32px 40px 60px' }}>
+        <main style={{ padding: isMobile ? '20px 16px 60px' : '32px 40px 60px' }}>
           {active === 'basic' && <BasicSection r={resume} />}
           {active === 'education' && <EducationSection items={resume.educations} />}
           {active === 'career' && <CareerSection items={resume.careers} careerSummary={careerSummary} />}

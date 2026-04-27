@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { fetchResume, upsertResume, uploadResumeFile, fetchProtectedFile } from '../api'
 import { Icon } from '../icons'
+import { useIsMobile } from '../utils'
 
 /* ── helpers ──────────────────────────────────────────── */
 
@@ -300,7 +301,7 @@ function EditBasic({ form, onFieldChange, token, onPhotoUploaded }) {
 
         <div style={ES.formCardSection}>
           <div style={ES.cardSectionLabel}>인적 사항</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="grid-2col" style={{ gap: 16 }}>
             <Field label="이름" value={form.name} onChange={v => onFieldChange('name', v)} required />
             <Field label="영문 이름" value={form.nameEn} onChange={v => onFieldChange('nameEn', v)} placeholder="Hong Gil-dong" mono helper="여권 표기와 동일하게 입력" />
             <Field label="이메일" value={form.email} onChange={() => {}} mono prefix="✉" hint="계정 설정에서 변경" />
@@ -332,7 +333,7 @@ function EditEducation({ items, onChange }) {
       <div style={ES.entryList}>
         {items.map((e, idx) => (
           <EntryCard key={e.id} idx={idx} summary={{ title: e.school || '(미입력)', sub: [e.level, e.major].filter(Boolean).join(' · ') }} onDelete={() => remove(e.id)}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="grid-2col" style={{ gap: 14 }}>
               <SegmentField label="구분" required value={e.level} onChange={v => update(e.id, 'level', v)} options={['고등학교', '대학교', '대학원 (석사)', '대학원 (박사)']} />
               <Field label="학교명" value={e.school} onChange={v => update(e.id, 'school', v)} required />
               <Field label="전공" value={e.major} onChange={v => update(e.id, 'major', v)} required />
@@ -365,7 +366,7 @@ function EditCareer({ items, onChange }) {
       <div style={ES.entryList}>
         {items.map((c, idx) => (
           <EntryCard key={c.id} idx={idx} summary={{ title: c.company || '(미입력)', sub: c.role }} onDelete={() => remove(c.id)}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="grid-2col" style={{ gap: 14 }}>
               <Field label="회사명" value={c.company} onChange={v => update(c.id, 'company', v)} required />
               <Field label="직책/직무" value={c.role} onChange={v => update(c.id, 'role', v)} required placeholder="Senior Security Engineer" />
               <PeriodField label="재직 기간" required start={c.start} end={c.end} isCurrent={c.is_current} onStartChange={v => update(c.id, 'start', v)} onEndChange={v => update(c.id, 'end', v)} onCurrentChange={v => update(c.id, 'is_current', v)} showToggle full />
@@ -395,7 +396,7 @@ function EditProject({ items, onChange }) {
       <div style={ES.entryList}>
         {items.map((p, idx) => (
           <EntryCard key={p.id} idx={idx} summary={{ title: p.name || '(미입력)', sub: p.role }} onDelete={() => remove(p.id)}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="grid-2col" style={{ gap: 14 }}>
               <Field label="프로젝트명" value={p.name} onChange={v => update(p.id, 'name', v)} required full />
               <Field label="역할" value={p.role} onChange={v => update(p.id, 'role', v)} placeholder="기술 리드 / 백엔드 / 풀스택" />
               <PeriodField label="기간" start={p.start} end={p.end} isCurrent={false} onStartChange={v => update(p.id, 'start', v)} onEndChange={v => update(p.id, 'end', v)} onCurrentChange={() => {}} />
@@ -426,7 +427,7 @@ function EditPaper({ items, onChange }) {
       <div style={ES.entryList}>
         {items.map((p, idx) => (
           <EntryCard key={p.id} idx={idx} summary={{ title: p.title || '(미입력)', sub: [p.venue, p.year].filter(Boolean).join(' · ') }} onDelete={() => remove(p.id)}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="grid-2col" style={{ gap: 14 }}>
               <Field label="제목" value={p.title} onChange={v => update(p.id, 'title', v)} required full />
               <Field label="발표 학회/저널" value={p.venue} onChange={v => update(p.id, 'venue', v)} required placeholder="USENIX Security" />
               <Field label="연도" value={p.year} onChange={v => update(p.id, 'year', v)} required mono placeholder="2024" />
@@ -457,7 +458,7 @@ function EditPatent({ items, onChange }) {
       <div style={ES.entryList}>
         {items.map((p, idx) => (
           <EntryCard key={p.id} idx={idx} summary={{ title: p.title || '(미입력)', sub: [p.number, p.year].filter(Boolean).join(' · ') }} onDelete={() => remove(p.id)}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="grid-2col" style={{ gap: 14 }}>
               <Field label="특허명" value={p.title} onChange={v => update(p.id, 'title', v)} required full />
               <Field label="출원/등록번호" value={p.number} onChange={v => update(p.id, 'number', v)} required mono placeholder="KR 10-1234567" />
               <Field label="연도" value={p.year} onChange={v => update(p.id, 'year', v)} required mono />
@@ -488,7 +489,7 @@ function EditLanguage({ items, onChange }) {
       <div style={ES.entryList}>
         {items.map((l, idx) => (
           <EntryCard key={l.id} idx={idx} summary={{ title: `${l.test || '(미입력)'} ${l.score || ''}`, sub: `${l.language} · ${l.year || ''}` }} onDelete={() => remove(l.id)}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="grid-2col" style={{ gap: 14 }}>
               <SegmentField label="언어" required value={l.language} onChange={v => update(l.id, 'language', v)} options={['영어', '일본어', '중국어', '기타']} />
               <Field label="시험명" value={l.test} onChange={v => update(l.id, 'test', v)} required placeholder="TOEIC / OPIc / JLPT" />
               <Field label="점수/등급" value={l.score} onChange={v => update(l.id, 'score', v)} required mono />
@@ -518,7 +519,7 @@ function EditCert({ items, onChange }) {
       <div style={ES.entryList}>
         {items.map((c, idx) => (
           <EntryCard key={c.id} idx={idx} summary={{ title: c.name || '(미입력)', sub: `${c.issuer || ''} · ${c.year || ''}` }} onDelete={() => remove(c.id)}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="grid-2col" style={{ gap: 14 }}>
               <Field label="자격증명" value={c.name} onChange={v => update(c.id, 'name', v)} required />
               <Field label="발급 기관" value={c.issuer} onChange={v => update(c.id, 'issuer', v)} required />
               <Field label="취득 연도" value={c.year} onChange={v => update(c.id, 'year', v)} required mono />
@@ -613,7 +614,7 @@ const ES = {
   helperRow: { display: 'flex', justifyContent: 'space-between', marginTop: 4, minHeight: 14 },
   helper: { fontSize: 11, color: 'var(--text-3)' },
   charCount: { fontSize: 11, color: 'var(--text-3)', fontFamily: 'var(--font-en)' },
-  segments: { display: 'inline-flex', padding: 3, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', gap: 1 },
+  segments: { display: 'flex', flexWrap: 'wrap', padding: 3, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', gap: 1 },
   segment: { fontSize: 12.5, fontWeight: 500, color: 'var(--text-2)', padding: '5px 10px', borderRadius: 5 },
   segmentActive: { background: 'var(--surface)', color: 'var(--accent)', fontWeight: 600, boxShadow: 'var(--shadow-sm)' },
   chipsBox: { display: 'flex', flexWrap: 'wrap', gap: 6, padding: 8, border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', background: 'var(--surface)', minHeight: 38 },
@@ -644,6 +645,7 @@ export default function ResumeEditPage() {
   const [dirty, setDirty] = useState(false)
   const [saveState, setSaveState] = useState('idle') // idle | saving | saved
   const [active, setActive] = useState(location.state?.section || 'basic')
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     if (!authLoading && !user) navigate('/login', { replace: true })
@@ -704,72 +706,101 @@ export default function ResumeEditPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
       {/* Header */}
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 24px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '10px 14px' : '12px 24px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 10 }}>
           <button onClick={() => navigate('/resume', { state: { section: active } })} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-2)', fontWeight: 500, padding: '6px 10px', borderRadius: 'var(--r-sm)' }}>
-            <Icon.Back /> 조회로 돌아가기
+            <Icon.Back /> {!isMobile && '조회로 돌아가기'}
           </button>
-          <span style={{ color: 'var(--text-3)' }}>/</span>
-          <span style={{ fontSize: 14, fontWeight: 600 }}>이력서 수정</span>
-          {saveState === 'saving' && <span style={{ fontSize: 11.5, color: 'var(--text-3)', marginLeft: 8, fontWeight: 500 }}>저장 중...</span>}
-          {saveState === 'saved' && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11.5, color: 'var(--new)', marginLeft: 8, fontWeight: 600 }}><Icon.Check size={11} /> 저장됨</span>}
-          {dirty && saveState === 'idle' && <span style={{ fontSize: 11.5, color: 'var(--urgent)', marginLeft: 8, fontWeight: 600 }}>● 저장하지 않은 변경사항</span>}
+          {!isMobile && <><span style={{ color: 'var(--text-3)' }}>/</span>
+          <span style={{ fontSize: 14, fontWeight: 600 }}>이력서 수정</span></>}
+          {saveState === 'saving' && <span style={{ fontSize: 11.5, color: 'var(--text-3)', fontWeight: 500 }}>저장 중...</span>}
+          {saveState === 'saved' && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11.5, color: 'var(--new)', fontWeight: 600 }}><Icon.Check size={11} /> 저장됨</span>}
+          {dirty && saveState === 'idle' && <span style={{ fontSize: 11.5, color: 'var(--urgent)', fontWeight: 600 }}>{isMobile ? '●' : '● 저장하지 않은 변경사항'}</span>}
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--text-3)', marginRight: 6 }}>
-            <kbd style={{ fontFamily: 'var(--font-en)', fontSize: 10.5, fontWeight: 600, padding: '2px 5px', border: '1px solid var(--border)', borderBottom: '2px solid var(--border-strong)', borderRadius: 4, background: 'var(--surface-2)', color: 'var(--text-2)' }}>⌘</kbd>
-            <kbd style={{ fontFamily: 'var(--font-en)', fontSize: 10.5, fontWeight: 600, padding: '2px 5px', border: '1px solid var(--border)', borderBottom: '2px solid var(--border-strong)', borderRadius: 4, background: 'var(--surface-2)', color: 'var(--text-2)' }}>S</kbd>
-            저장
-          </span>
-          <button onClick={() => navigate('/resume', { state: { section: active } })} style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', padding: '9px 16px', borderRadius: 'var(--r-md)' }}>취소</button>
+          {!isMobile && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--text-3)', marginRight: 6 }}>
+              <kbd style={{ fontFamily: 'var(--font-en)', fontSize: 10.5, fontWeight: 600, padding: '2px 5px', border: '1px solid var(--border)', borderBottom: '2px solid var(--border-strong)', borderRadius: 4, background: 'var(--surface-2)', color: 'var(--text-2)' }}>⌘</kbd>
+              <kbd style={{ fontFamily: 'var(--font-en)', fontSize: 10.5, fontWeight: 600, padding: '2px 5px', border: '1px solid var(--border)', borderBottom: '2px solid var(--border-strong)', borderRadius: 4, background: 'var(--surface-2)', color: 'var(--text-2)' }}>S</kbd>
+              저장
+            </span>
+          )}
+          {!isMobile && (
+            <button onClick={() => navigate('/resume', { state: { section: active } })} style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', padding: '9px 16px', borderRadius: 'var(--r-md)' }}>취소</button>
+          )}
           <button onClick={handleSave} disabled={saveState === 'saving'}
-            style={{ fontSize: 13, fontWeight: 600, color: '#FFF', background: 'var(--accent)', padding: '9px 18px', borderRadius: 'var(--r-md)', opacity: saveState === 'saving' ? 0.6 : 1 }}>
+            style={{ fontSize: 13, fontWeight: 600, color: '#FFF', background: 'var(--accent)', padding: isMobile ? '9px 16px' : '9px 18px', borderRadius: 'var(--r-md)', opacity: saveState === 'saving' ? 0.6 : 1 }}>
             {saveState === 'saving' ? '저장 중...' : '저장'}
           </button>
         </div>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', minHeight: 'calc(100vh - 57px)' }}>
-        {/* Sidenav */}
-        <aside style={{ padding: '20px 14px', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--surface)' }}>
-          <div style={{ padding: '14px 14px 12px', background: 'var(--accent-soft)', borderRadius: 'var(--r-md)', margin: '0 0 18px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-              <span style={{ fontSize: 11.5, color: 'var(--accent)', fontWeight: 600 }}>전체 진행률</span>
-              <span style={{ fontFamily: 'var(--font-en)', fontSize: 18, fontWeight: 700, color: 'var(--accent)', letterSpacing: '-0.02em' }}>{progressPct}%</span>
+      <div style={isMobile ? {} : { display: 'grid', gridTemplateColumns: '260px 1fr', minHeight: 'calc(100vh - 57px)' }}>
+        {/* Sidenav / mobile tab strip */}
+        {isMobile ? (
+          <div style={{ borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderBottom: '1px solid var(--border)' }}>
+              <div style={{ flex: 1, height: 4, background: 'rgba(30, 58, 95, 0.12)', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ height: '100%', background: 'var(--accent)', borderRadius: 2, width: `${progressPct}%`, transition: 'width 0.3s ease' }} />
+              </div>
+              <span style={{ fontFamily: 'var(--font-en)', fontSize: 12, fontWeight: 700, color: 'var(--accent)', whiteSpace: 'nowrap' }}>{progressPct}%</span>
             </div>
-            <div style={{ height: 4, background: 'rgba(30, 58, 95, 0.15)', borderRadius: 2, overflow: 'hidden' }}>
-              <div style={{ height: '100%', background: 'var(--accent)', borderRadius: 2, width: `${progressPct}%`, transition: 'width 0.3s ease' }} />
-            </div>
-            <div style={{ fontSize: 11, color: 'var(--accent)', opacity: 0.75, marginTop: 6, fontWeight: 500 }}>{done} / {total} 섹션 완료</div>
-          </div>
-
-          <div style={{ fontSize: 10.5, fontWeight: 600, color: 'var(--text-3)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '0 12px', marginBottom: 8 }}>섹션</div>
-          {sections.map(s => (
-            <button key={s.id} onClick={() => setActive(s.id)}
-              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 'var(--r-sm)', fontSize: 13.5, color: active === s.id ? 'var(--accent)' : 'var(--text-2)', fontWeight: active === s.id ? 600 : 500, width: '100%', background: active === s.id ? 'var(--accent-soft)' : 'transparent' }}>
-              <span style={{ width: 14, display: 'inline-flex', justifyContent: 'center', flexShrink: 0 }}>
-                {s.filled
-                  ? <span style={{ width: 14, height: 14, borderRadius: '50%', background: 'var(--new)', color: '#FFF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><Icon.Check size={9} /></span>
-                  : <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'transparent', border: '1.5px dashed var(--border-strong)' }} />
-                }
-              </span>
-              <span style={{ flex: 1, textAlign: 'left' }}>
-                {s.label}{s.required && <span style={{ color: 'var(--urgent)', fontWeight: 700, marginLeft: 4 }}>*</span>}
-              </span>
-              {s.count !== undefined && <span style={{ fontFamily: 'var(--font-en)', fontSize: 11.5, color: 'var(--text-3)', fontWeight: 500 }}>{s.count}</span>}
-            </button>
-          ))}
-
-          <div style={{ marginTop: 'auto', padding: '20px 0 8px' }}>
-            <div style={{ padding: '12px 14px', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)', border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-2)', marginBottom: 4 }}>💡 팁</div>
-              <div style={{ fontSize: 11.5, color: 'var(--text-3)', lineHeight: 1.5 }}>이력서 완성도가 높을수록<br />매칭 점수가 올라갑니다.</div>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <div style={{ display: 'flex', padding: '0 8px', minWidth: 'max-content' }}>
+                {sections.map(s => (
+                  <button key={s.id} onClick={() => setActive(s.id)}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '10px 12px', fontSize: 13, fontWeight: active === s.id ? 600 : 500, color: active === s.id ? 'var(--accent)' : 'var(--text-2)', borderBottom: `2px solid ${active === s.id ? 'var(--accent)' : 'transparent'}`, whiteSpace: 'nowrap', background: 'transparent' }}>
+                    {s.filled
+                      ? <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--new)', flexShrink: 0 }} />
+                      : <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--border-strong)', flexShrink: 0 }} />
+                    }
+                    {s.label}{s.required && <span style={{ color: 'var(--urgent)', fontWeight: 700 }}>*</span>}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </aside>
+        ) : (
+          <aside style={{ padding: '20px 14px', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--surface)' }}>
+            <div style={{ padding: '14px 14px 12px', background: 'var(--accent-soft)', borderRadius: 'var(--r-md)', margin: '0 0 18px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                <span style={{ fontSize: 11.5, color: 'var(--accent)', fontWeight: 600 }}>전체 진행률</span>
+                <span style={{ fontFamily: 'var(--font-en)', fontSize: 18, fontWeight: 700, color: 'var(--accent)', letterSpacing: '-0.02em' }}>{progressPct}%</span>
+              </div>
+              <div style={{ height: 4, background: 'rgba(30, 58, 95, 0.15)', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ height: '100%', background: 'var(--accent)', borderRadius: 2, width: `${progressPct}%`, transition: 'width 0.3s ease' }} />
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--accent)', opacity: 0.75, marginTop: 6, fontWeight: 500 }}>{done} / {total} 섹션 완료</div>
+            </div>
+
+            <div style={{ fontSize: 10.5, fontWeight: 600, color: 'var(--text-3)', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '0 12px', marginBottom: 8 }}>섹션</div>
+            {sections.map(s => (
+              <button key={s.id} onClick={() => setActive(s.id)}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 'var(--r-sm)', fontSize: 13.5, color: active === s.id ? 'var(--accent)' : 'var(--text-2)', fontWeight: active === s.id ? 600 : 500, width: '100%', background: active === s.id ? 'var(--accent-soft)' : 'transparent' }}>
+                <span style={{ width: 14, display: 'inline-flex', justifyContent: 'center', flexShrink: 0 }}>
+                  {s.filled
+                    ? <span style={{ width: 14, height: 14, borderRadius: '50%', background: 'var(--new)', color: '#FFF', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><Icon.Check size={9} /></span>
+                    : <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'transparent', border: '1.5px dashed var(--border-strong)' }} />
+                  }
+                </span>
+                <span style={{ flex: 1, textAlign: 'left' }}>
+                  {s.label}{s.required && <span style={{ color: 'var(--urgent)', fontWeight: 700, marginLeft: 4 }}>*</span>}
+                </span>
+                {s.count !== undefined && <span style={{ fontFamily: 'var(--font-en)', fontSize: 11.5, color: 'var(--text-3)', fontWeight: 500 }}>{s.count}</span>}
+              </button>
+            ))}
+
+            <div style={{ marginTop: 'auto', padding: '20px 0 8px' }}>
+              <div style={{ padding: '12px 14px', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)', border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-2)', marginBottom: 4 }}>💡 팁</div>
+                <div style={{ fontSize: 11.5, color: 'var(--text-3)', lineHeight: 1.5 }}>이력서 완성도가 높을수록<br />매칭 점수가 올라갑니다.</div>
+              </div>
+            </div>
+          </aside>
+        )}
 
         {/* Main */}
-        <main style={{ padding: '32px 40px 100px' }}>
+        <main style={{ padding: isMobile ? '20px 16px 80px' : '32px 40px 100px' }}>
           {active === 'basic' && <EditBasic form={form} onFieldChange={setField} token={token} onPhotoUploaded={path => setField('photoPath', path)} />}
           {active === 'education' && <EditEducation items={form.educations} onChange={v => setSection('educations', v)} />}
           {active === 'career' && <EditCareer items={form.careers} onChange={v => setSection('careers', v)} />}

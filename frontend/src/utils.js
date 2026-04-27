@@ -1,4 +1,16 @@
+import { useState, useEffect } from 'react';
+
 const SOURCE_MAP = { saramin: '사람인', jobkorea: '잡코리아', wanted: '원티드' };
+
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640)
+  useEffect(() => {
+    const fn = () => setIsMobile(window.innerWidth < 640)
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+  return isMobile
+}
 
 const ENTERPRISE_PATTERNS = [
   /삼성/,

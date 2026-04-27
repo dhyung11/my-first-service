@@ -79,3 +79,7 @@ input { font-family: inherit; }
   to   { transform: rotate(360deg); }
 }
 .spin { animation: spin 0.8s linear infinite; }
+
+/* Responsive 2-column grid — collapses to 1 column on mobile */
+.grid-2col { display: grid; grid-template-columns: 1fr 1fr; }
+@media (max-width: 639px) { .grid-2col { grid-template-columns: 1fr; } }
