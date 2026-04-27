@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import date, datetime
-from typing import Optional
+from typing import Any, Optional
 
 class JobRead(BaseModel):
     id: str
@@ -39,3 +39,27 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserRead
+
+class ResumeUpdate(BaseModel):
+    name: Optional[str] = None
+    name_en: Optional[str] = None
+    address: Optional[str] = None
+    military_service: Optional[str] = None
+    education: Optional[list[dict[str, Any]]] = None
+    experience: Optional[list[dict[str, Any]]] = None
+    projects: Optional[list[dict[str, Any]]] = None
+    papers: Optional[list[dict[str, Any]]] = None
+    patents: Optional[list[dict[str, Any]]] = None
+    languages: Optional[list[dict[str, Any]]] = None
+    certifications: Optional[list[dict[str, Any]]] = None
+
+class ResumeRead(ResumeUpdate):
+    id: str
+    user_id: str
+    photo_path: Optional[str] = None
+    resume_file_path: Optional[str] = None
+    portfolio_file_path: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
