@@ -706,7 +706,7 @@ export default function ResumeEditPage() {
       {/* Header */}
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 24px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <button onClick={() => navigate('/resume')} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-2)', fontWeight: 500, padding: '6px 10px', borderRadius: 'var(--r-sm)' }}>
+          <button onClick={() => navigate('/resume', { state: { section: active } })} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-2)', fontWeight: 500, padding: '6px 10px', borderRadius: 'var(--r-sm)' }}>
             <Icon.Back /> 조회로 돌아가기
           </button>
           <span style={{ color: 'var(--text-3)' }}>/</span>
@@ -721,7 +721,7 @@ export default function ResumeEditPage() {
             <kbd style={{ fontFamily: 'var(--font-en)', fontSize: 10.5, fontWeight: 600, padding: '2px 5px', border: '1px solid var(--border)', borderBottom: '2px solid var(--border-strong)', borderRadius: 4, background: 'var(--surface-2)', color: 'var(--text-2)' }}>S</kbd>
             저장
           </span>
-          <button onClick={() => navigate('/resume')} style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', padding: '9px 16px', borderRadius: 'var(--r-md)' }}>취소</button>
+          <button onClick={() => navigate('/resume', { state: { section: active } })} style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', padding: '9px 16px', borderRadius: 'var(--r-md)' }}>취소</button>
           <button onClick={handleSave} disabled={saveState === 'saving'}
             style={{ fontSize: 13, fontWeight: 600, color: '#FFF', background: 'var(--accent)', padding: '9px 18px', borderRadius: 'var(--r-md)', opacity: saveState === 'saving' ? 0.6 : 1 }}>
             {saveState === 'saving' ? '저장 중...' : '저장'}
