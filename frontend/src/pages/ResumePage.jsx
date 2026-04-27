@@ -533,9 +533,11 @@ export default function ResumePage() {
       {/* Header */}
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 28px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Link to="/" style={{ color: 'var(--accent)', display: 'flex' }}><Icon.Logo size={20} /></Link>
-          <span style={{ fontFamily: 'var(--font-en)', fontSize: 17, fontWeight: 700, letterSpacing: '-0.02em' }}>SecJobs</span>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-2)', fontWeight: 500, padding: '6px 10px', borderRadius: 'var(--r-sm)', textDecoration: 'none' }}>
+            <Icon.Back /> 채용 공고
+          </Link>
           <span style={{ color: 'var(--text-3)' }}>/</span>
+          <span style={{ color: 'var(--accent)', display: 'flex' }}><Icon.Logo size={18} /></span>
           <span style={{ fontSize: 14, color: 'var(--text-2)', fontWeight: 500 }}>내 이력서</span>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
