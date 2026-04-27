@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -10,6 +11,8 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserRead, status_code=201)
 async def register(body: UserCreate, db: AsyncSession = Depends(get_db)):
+    if os.getenv("REGISTRATION_ENABLED", "false").lower() != "true":
+        raise HTTPException(status_code=403, detail="현재 회원가입이 비활성화되어 있습니다.")
     if len(body.email.strip()) < 3 or "@" not in body.email:
         raise HTTPException(status_code=400, detail="유효한 이메일을 입력해주세요.")
     if len(body.password) < 8:

@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => { if (user) navigate('/') }, [user])
+  useEffect(() => { navigate('/login', { replace: true }) }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

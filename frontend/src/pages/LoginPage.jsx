@@ -80,10 +80,11 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p style={{ textAlign: 'center', marginTop: 16, fontSize: 13, color: 'var(--text-3)' }}>
+        {/* 회원가입 링크: REGISTRATION_ENABLED 시 노출 */}
+        {/* <p style={{ textAlign: 'center', marginTop: 16, fontSize: 13, color: 'var(--text-3)' }}>
           계정이 없으신가요?{' '}
           <Link to="/register" style={{ color: 'var(--accent)', fontWeight: 500 }}>회원가입</Link>
-        </p>
+        </p> */}
       </div>
     </div>
   )
