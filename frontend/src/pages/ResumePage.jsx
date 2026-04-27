@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { fetchResume, fetchProtectedFile } from '../api'
 import { Icon } from '../icons'
@@ -465,10 +465,11 @@ const VS = {
 export default function ResumePage() {
   const { user, token, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [resume, setResume] = useState(null)
   const [loading, setLoading] = useState(true)
   const [photoUrl, setPhotoUrl] = useState(null)
-  const [active, setActive] = useState('basic')
+  const [active, setActive] = useState(location.state?.section || 'basic')
   const [toast, setToast] = useState('')
 
   useEffect(() => {

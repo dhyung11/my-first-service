@@ -663,7 +663,7 @@ export default function ResumeEditPage() {
       await upsertResume(token, toApi(form))
       setDirty(false)
       setSaveState('saved')
-      setTimeout(() => setSaveState('idle'), 3000)
+      navigate('/resume', { state: { section: active } })
     } catch (e) {
       setSaveState('idle')
       alert('저장 실패: ' + e.message)
