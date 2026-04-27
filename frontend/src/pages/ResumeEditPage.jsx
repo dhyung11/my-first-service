@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { fetchResume, upsertResume, uploadResumeFile, fetchProtectedFile } from '../api'
 import { Icon } from '../icons'
@@ -638,11 +638,12 @@ const ES = {
 export default function ResumeEditPage() {
   const { user, token, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [form, setForm] = useState(null)
   const [loading, setLoading] = useState(true)
   const [dirty, setDirty] = useState(false)
   const [saveState, setSaveState] = useState('idle') // idle | saving | saved
-  const [active, setActive] = useState('basic')
+  const [active, setActive] = useState(location.state?.section || 'basic')
 
   useEffect(() => {
     if (!authLoading && !user) navigate('/login', { replace: true })

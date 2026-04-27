@@ -549,7 +549,7 @@ export default function ResumePage() {
           >
             <Icon.Download size={13} /> PDF 내보내기
           </button>
-          <Link to="/resume/edit" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#FFF', background: 'var(--accent)', padding: '9px 14px', borderRadius: 'var(--r-md)', textDecoration: 'none' }}>
+          <Link to="/resume/edit" state={{ section: active }} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, color: '#FFF', background: 'var(--accent)', padding: '9px 14px', borderRadius: 'var(--r-md)', textDecoration: 'none' }}>
             <Icon.Edit /> 이력서 수정
           </Link>
         </div>
