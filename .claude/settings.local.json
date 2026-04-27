@@ -11,7 +11,10 @@
       "Bash(../.venv/Scripts/python -m pytest tests/test_crawl_api.py -v)",
       "Bash(../.venv/Scripts/python -m pytest -v)",
       "Bash(npm run *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(curl -s \"https://my-first-service-production.up.railway.app/api/jobs\")",
+      "Bash(python -c ' *)",
+      "WebFetch(domain:job.incruit.com)"
     ]
   }
 }

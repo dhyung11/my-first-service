@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Icon } from '../icons'
 
 export default function Header({
@@ -6,6 +7,7 @@ export default function Header({
   sidebarCollapsed, onToggleSidebar,
   isMobile,
   onCrawl, crawling,
+  user, onLogout,
 }) {
   return (
     <header style={{
@@ -47,25 +49,60 @@ export default function Header({
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         {!isMobile && <SearchBar value={query} onChange={setQuery} />}
-        <button
-          onClick={onCrawl}
-          disabled={crawling}
-          style={{
-            fontSize: 13, fontWeight: 500, color: '#FFFFFF',
-            background: crawling ? 'var(--text-3)' : 'var(--accent)',
-            padding: isMobile ? '10px 12px' : '10px 16px',
-            borderRadius: 'var(--r-md)',
-            display: 'flex', alignItems: 'center', gap: 6,
-            transition: 'background 0.15s',
-            cursor: crawling ? 'not-allowed' : 'pointer',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <span className={crawling ? 'spin' : ''} style={{ display: 'inline-flex' }}>
-            <Icon.Refresh size={14} />
-          </span>
-          {!isMobile && (crawling ? '수집 중...' : '수집 시작')}
-        </button>
+
+        {user?.is_admin && (
+          <button
+            onClick={onCrawl}
+            disabled={crawling}
+            style={{
+              fontSize: 13, fontWeight: 500, color: '#FFFFFF',
+              background: crawling ? 'var(--text-3)' : 'var(--accent)',
+              padding: isMobile ? '10px 12px' : '10px 16px',
+              borderRadius: 'var(--r-md)',
+              display: 'flex', alignItems: 'center', gap: 6,
+              transition: 'background 0.15s',
+              cursor: crawling ? 'not-allowed' : 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <span className={crawling ? 'spin' : ''} style={{ display: 'inline-flex' }}>
+              <Icon.Refresh size={14} />
+            </span>
+            {!isMobile && (crawling ? '수집 중...' : '수집 시작')}
+          </button>
+        )}
+
+        {user ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {!isMobile && (
+              <span style={{ fontSize: 12.5, color: 'var(--text-3)', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {user.email}
+              </span>
+            )}
+            <button
+              onClick={onLogout}
+              style={{
+                fontSize: 12.5, fontWeight: 500, color: 'var(--text-2)',
+                border: '1px solid var(--border)', borderRadius: 'var(--r-md)',
+                padding: '7px 12px', cursor: 'pointer',
+              }}
+            >
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <Link
+            to="/login"
+            style={{
+              fontSize: 13, fontWeight: 500, color: 'var(--accent)',
+              border: '1px solid var(--accent)', borderRadius: 'var(--r-md)',
+              padding: '8px 14px', textDecoration: 'none',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            로그인
+          </Link>
+        )}
       </div>
     </header>
   )

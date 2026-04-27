@@ -18,3 +18,24 @@ class JobRead(BaseModel):
 class CrawlResult(BaseModel):
     new_jobs: int
     message: str
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+
+class UserRead(BaseModel):
+    id: str
+    email: str
+    is_admin: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserRead

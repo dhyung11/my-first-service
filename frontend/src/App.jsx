@@ -1,11 +1,14 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { fetchJobs, triggerCrawl } from './api'
+import { fetchJobs, triggerCrawl, fetchBookmarks, addBookmark, removeBookmark, syncBookmarks } from './api'
 import { adaptJob } from './utils'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import Header from './components/Header'
 import Sidebar, { SidebarContent } from './components/Sidebar'
 import JobList from './components/JobList'
 import JobDetail from './components/JobDetail'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640)
@@ -18,6 +21,7 @@ function useIsMobile() {
 }
 
 function HomePage() {
+  const { user, token, logout } = useAuth()
   const [rawJobs, setRawJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [crawling, setCrawling] = useState(false)
@@ -35,7 +39,6 @@ function HomePage() {
   const isMobile = useIsMobile()
 
   const jobs = useMemo(() => rawJobs.map(adaptJob), [rawJobs])
-
   const enterpriseCount = useMemo(() => jobs.filter(j => j.enterprise).length, [jobs])
 
   const filtered = useMemo(() => {
@@ -81,11 +84,32 @@ function HomePage() {
 
   useEffect(() => { loadJobs() }, [loadJobs])
 
+  // 로그인 시: localStorage 북마크 DB 동기화 후 DB 기준으로 전환
+  useEffect(() => {
+    if (!user || !token) return
+    const localIds = Object.keys(bookmarks)
+    const doSync = async () => {
+      if (localIds.length > 0) await syncBookmarks(token, localIds).catch(() => {})
+      const dbIds = await fetchBookmarks(token).catch(() => [])
+      const next = {}
+      dbIds.forEach(id => { next[id] = true })
+      setBookmarks(next)
+      localStorage.removeItem('bookmarks')
+    }
+    doSync()
+  }, [user])
+
+  const handleLogout = () => {
+    logout()
+    setBookmarks({})
+    if (activeSource === 'bookmarked') setActiveSource('all')
+  }
+
   const handleCrawl = async () => {
     setCrawling(true)
     setCrawlMsg('')
     try {
-      const result = await triggerCrawl()
+      const result = await triggerCrawl(token)
       setCrawlMsg(result.message)
       await loadJobs()
     } catch {
@@ -95,12 +119,29 @@ function HomePage() {
     }
   }
 
-  const toggleBookmark = (id) => setBookmarks(b => {
-    const next = { ...b, [id]: !b[id] }
-    if (!next[id]) delete next[id]
-    localStorage.setItem('bookmarks', JSON.stringify(next))
-    return next
-  })
+  const toggleBookmark = async (id) => {
+    const isBookmarked = !!bookmarks[id]
+    // 낙관적 업데이트
+    setBookmarks(b => {
+      const next = { ...b, [id]: !b[id] }
+      if (!next[id]) delete next[id]
+      if (!user) localStorage.setItem('bookmarks', JSON.stringify(next))
+      return next
+    })
+    if (user && token) {
+      try {
+        if (isBookmarked) await removeBookmark(token, id)
+        else await addBookmark(token, id)
+      } catch {
+        // 실패 시 롤백
+        setBookmarks(b => {
+          const next = { ...b, [id]: isBookmarked }
+          if (!next[id]) delete next[id]
+          return next
+        })
+      }
+    }
+  }
 
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -112,6 +153,8 @@ function HomePage() {
         isMobile={isMobile}
         onCrawl={handleCrawl}
         crawling={crawling}
+        user={user}
+        onLogout={handleLogout}
       />
 
       <div style={{
@@ -254,10 +297,14 @@ function SortSelect({ value, onChange }) {
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/jobs/:id" element={<JobDetailPage />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/jobs/:id" element={<JobDetailPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

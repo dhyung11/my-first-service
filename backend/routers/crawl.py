@@ -12,6 +12,8 @@ from backend.crawlers.base import JobData
 from backend.crawlers.saramin import SaraminCrawler
 from backend.crawlers.jobkorea import JobkoreaCrawler
 from backend.crawlers.wanted import WantedCrawler
+from backend.auth import get_current_admin
+from backend.models import User
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["crawl"])
@@ -63,7 +65,7 @@ async def save_job(db: AsyncSession, job_data: JobData) -> bool:
     return True
 
 @router.post("/crawl", response_model=CrawlResult)
-async def crawl_jobs(db: AsyncSession = Depends(get_db)):
+async def crawl_jobs(db: AsyncSession = Depends(get_db), _: User = Depends(get_current_admin)):
     crawlers = [SaraminCrawler(), JobkoreaCrawler(), WantedCrawler()]
     results = await asyncio.gather(*[c.fetch() for c in crawlers], return_exceptions=True)
 

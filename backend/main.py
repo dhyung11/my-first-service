@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from backend.database import init_db
-from backend.routers import jobs, crawl
+from backend.routers import jobs, crawl, auth, bookmarks
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -23,6 +23,8 @@ app.add_middleware(
 
 app.include_router(jobs.router)
 app.include_router(crawl.router)
+app.include_router(auth.router)
+app.include_router(bookmarks.router)
 
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(static_dir):
