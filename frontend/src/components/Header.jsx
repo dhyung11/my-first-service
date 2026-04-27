@@ -75,6 +75,19 @@ export default function Header({
         {user ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {!isMobile && (
+              <Link
+                to="/resume"
+                style={{
+                  fontSize: 13, fontWeight: 500, color: 'var(--text-2)',
+                  border: '1px solid var(--border)', borderRadius: 'var(--r-md)',
+                  padding: '7px 12px', textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                내 이력서
+              </Link>
+            )}
+            {!isMobile && (
               <span style={{ fontSize: 12.5, color: 'var(--text-3)', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {user.email}
               </span>

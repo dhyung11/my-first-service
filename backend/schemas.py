@@ -43,6 +43,8 @@ class Token(BaseModel):
 class ResumeUpdate(BaseModel):
     name: Optional[str] = None
     name_en: Optional[str] = None
+    phone: Optional[str] = None
+    intro: Optional[str] = None
     address: Optional[str] = None
     military_service: Optional[str] = None
     education: Optional[list[dict[str, Any]]] = None

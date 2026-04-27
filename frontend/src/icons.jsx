@@ -33,6 +33,55 @@ export const Icon = {
       <path d="M12 2v3h-3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
+  Download: ({ size = 14 }) => (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none">
+      <path d="M7 2v7M4 6l3 3 3-3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M2 11h10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+    </svg>
+  ),
+  Edit: ({ size = 14 }) => (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none">
+      <path d="M9.5 2.5L11.5 4.5L5 11H3V9L9.5 2.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+    </svg>
+  ),
+  File: ({ size = 16 }) => (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path d="M9 2H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6L9 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+      <path d="M9 2v4h4" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+    </svg>
+  ),
+  Back: ({ size = 14 }) => (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none">
+      <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  Check: ({ size = 12 }) => (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none">
+      <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  Trash: ({ size = 13 }) => (
+    <svg width={size} height={size} viewBox="0 0 13 13" fill="none">
+      <path d="M2 3.5h9M5 3.5V2.5h3v1M4 3.5l.5 7h4l.5-7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  Plus: ({ size = 13 }) => (
+    <svg width={size} height={size} viewBox="0 0 13 13" fill="none">
+      <path d="M6.5 2v9M2 6.5h9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  ),
+  Upload: ({ size = 20 }) => (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+      <path d="M10 13V4M7 7l3-3 3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M3 14v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+    </svg>
+  ),
+  User: ({ size = 16 }) => (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" strokeWidth="1.3"/>
+      <path d="M2.5 13.5c0-2.76 2.46-5 5.5-5s5.5 2.24 5.5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+    </svg>
+  ),
 };
 
 export const CompanyLogo = ({ company, color, size = 36 }) => (

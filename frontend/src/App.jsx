@@ -9,6 +9,8 @@ import JobList from './components/JobList'
 import JobDetail from './components/JobDetail'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import ResumePage from './pages/ResumePage'
+import ResumeEditPage from './pages/ResumeEditPage'
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640)
@@ -310,6 +312,8 @@ export default function App() {
           <Route path="/jobs/:id" element={<JobDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/resume" element={<ResumePage />} />
+          <Route path="/resume/edit" element={<ResumeEditPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

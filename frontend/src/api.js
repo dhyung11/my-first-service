@@ -80,3 +80,33 @@ export async function syncBookmarks(token, jobIds) {
     body: JSON.stringify(jobIds),
   }))
 }
+
+export async function fetchResume(token) {
+  const res = await fetch(`${BASE}/resume`, { headers: authHeader(token) })
+  if (res.status === 404) return null
+  return handleResponse(res)
+}
+
+export async function upsertResume(token, data) {
+  return handleResponse(await fetch(`${BASE}/resume`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeader(token) },
+    body: JSON.stringify(data),
+  }))
+}
+
+export async function uploadResumeFile(token, fileType, file) {
+  const form = new FormData()
+  form.append('file', file)
+  return handleResponse(await fetch(`${BASE}/resume/upload/${fileType}`, {
+    method: 'POST',
+    headers: authHeader(token),
+    body: form,
+  }))
+}
+
+export async function fetchProtectedFile(token, filePath) {
+  const res = await fetch(`${BASE}/uploads/${filePath}`, { headers: authHeader(token) })
+  if (!res.ok) return null
+  return URL.createObjectURL(await res.blob())
+}

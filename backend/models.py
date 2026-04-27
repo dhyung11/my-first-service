@@ -36,6 +36,8 @@ class Resume(Base):
     name_en: Mapped[Optional[str]] = mapped_column(Text)
     address: Mapped[Optional[str]] = mapped_column(Text)
     military_service: Mapped[Optional[str]] = mapped_column(String(20))
+    phone: Mapped[Optional[str]] = mapped_column(String(30))
+    intro: Mapped[Optional[str]] = mapped_column(Text)
     photo_path: Mapped[Optional[str]] = mapped_column(Text)
     resume_file_path: Mapped[Optional[str]] = mapped_column(Text)
     portfolio_file_path: Mapped[Optional[str]] = mapped_column(Text)
