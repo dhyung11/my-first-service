@@ -4,9 +4,9 @@ import re
 from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete, or_, and_
+from sqlalchemy import select, delete, or_, and_, func
 from backend.database import get_db
-from backend.models import Job
+from backend.models import Job, CrawlLog
 from backend.schemas import CrawlResult
 from backend.crawlers.base import JobData
 from backend.crawlers.saramin import SaraminCrawler
@@ -64,6 +64,11 @@ async def save_job(db: AsyncSession, job_data: JobData) -> bool:
     ))
     return True
 
+@router.get("/crawl/status")
+async def crawl_status(db: AsyncSession = Depends(get_db)):
+    ran_at = (await db.execute(select(func.max(CrawlLog.ran_at)))).scalar_one_or_none()
+    return {"last_crawl_at": ran_at}
+
 @router.post("/crawl", response_model=CrawlResult)
 async def crawl_jobs(db: AsyncSession = Depends(get_db), _: User = Depends(get_current_admin)):
     crawlers = [SaraminCrawler(), JobkoreaCrawler(), WantedCrawler()]
@@ -97,6 +102,7 @@ async def crawl_jobs(db: AsyncSession = Depends(get_db), _: User = Depends(get_c
     if skipped:
         logger.info("Skipped %d non-security jobs", skipped)
 
+    db.add(CrawlLog())
     await db.commit()
 
     parts = [f"{n}:{c}" for n, c in source_counts.items()]

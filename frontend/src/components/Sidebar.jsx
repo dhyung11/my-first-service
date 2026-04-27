@@ -1,4 +1,4 @@
-export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, totalCount, bookmarkCount, enterpriseCount }) {
+export default function Sidebar({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, totalCount, bookmarkCount, enterpriseCount, lastCrawlAt }) {
   return (
     <aside style={{
       padding: '28px 24px',
@@ -17,12 +17,20 @@ export default function Sidebar({ activeDomain, setActiveDomain, activeSource, s
         totalCount={totalCount}
         bookmarkCount={bookmarkCount}
         enterpriseCount={enterpriseCount}
+        lastCrawlAt={lastCrawlAt}
       />
     </aside>
   )
 }
 
-export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, totalCount, bookmarkCount, enterpriseCount }) {
+function formatCrawlAt(iso) {
+  if (!iso) return null
+  const d = new Date(iso)
+  const pad = n => String(n).padStart(2, '0')
+  return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+export function SidebarContent({ activeDomain, setActiveDomain, activeSource, setActiveSource, activeEnterprise, setActiveEnterprise, domainCounts, totalCount, bookmarkCount, enterpriseCount, lastCrawlAt }) {
   const domains = ['정보보안', '보안 엔지니어링', 'SecOps', '클라우드 보안']
 
   return (
@@ -68,17 +76,17 @@ export function SidebarContent({ activeDomain, setActiveDomain, activeSource, se
 
       <div style={sectionStyle}>
         <div style={labelStyle}>수집 현황</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 10px' }}>
-          <span style={{
-            width: 6, height: 6, borderRadius: '50%',
-            background: 'var(--new)',
-            boxShadow: '0 0 0 3px var(--new-soft)',
-            flexShrink: 0,
-          }} />
-          <span style={{ fontSize: 12.5, color: 'var(--text-2)' }}>수집 준비 완료</span>
-        </div>
-        <div style={{ fontSize: 11.5, color: 'var(--text-3)', padding: '2px 10px', fontFamily: 'var(--font-en)' }}>
-          수집 시작 버튼으로 최신 공고를 가져오세요
+        <div style={{ padding: '4px 10px' }}>
+          {lastCrawlAt ? (
+            <>
+              <div style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 3 }}>마지막 수집</div>
+              <div style={{ fontFamily: 'var(--font-en)', fontSize: 13, fontWeight: 600, color: 'var(--text-2)', letterSpacing: '-0.01em' }}>
+                {formatCrawlAt(lastCrawlAt)}
+              </div>
+            </>
+          ) : (
+            <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>수집 기록 없음</div>
+          )}
         </div>
       </div>
     </>

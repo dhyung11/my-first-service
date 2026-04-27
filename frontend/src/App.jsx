@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { fetchJobs, triggerCrawl, fetchBookmarks, addBookmark, removeBookmark, syncBookmarks } from './api'
+import { fetchJobs, triggerCrawl, fetchBookmarks, addBookmark, removeBookmark, syncBookmarks, fetchCrawlStatus } from './api'
 import { adaptJob } from './utils'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Header from './components/Header'
@@ -26,6 +26,7 @@ function HomePage() {
   const [loading, setLoading] = useState(true)
   const [crawling, setCrawling] = useState(false)
   const [crawlMsg, setCrawlMsg] = useState('')
+  const [lastCrawlAt, setLastCrawlAt] = useState(null)
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState('dday')
   const [activeDomain, setActiveDomain] = useState('all')
@@ -83,6 +84,9 @@ function HomePage() {
   }, [])
 
   useEffect(() => { loadJobs() }, [loadJobs])
+  useEffect(() => {
+    fetchCrawlStatus().then(d => setLastCrawlAt(d.last_crawl_at)).catch(() => {})
+  }, [])
 
   // 로그인 시: localStorage 북마크 DB 동기화 후 DB 기준으로 전환
   useEffect(() => {
@@ -112,6 +116,7 @@ function HomePage() {
       const result = await triggerCrawl(token)
       setCrawlMsg(result.message)
       await loadJobs()
+      fetchCrawlStatus().then(d => setLastCrawlAt(d.last_crawl_at)).catch(() => {})
     } catch {
       setCrawlMsg('수집 중 오류가 발생했습니다.')
     } finally {
@@ -191,6 +196,7 @@ function HomePage() {
             totalCount={jobs.length}
             bookmarkCount={bookmarkCount}
             enterpriseCount={enterpriseCount}
+            lastCrawlAt={lastCrawlAt}
           />
         )}
 
@@ -215,6 +221,7 @@ function HomePage() {
                 totalCount={jobs.length}
                 bookmarkCount={bookmarkCount}
                 enterpriseCount={enterpriseCount}
+                lastCrawlAt={lastCrawlAt}
               />
             </div>
           </div>

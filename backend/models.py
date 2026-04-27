@@ -27,6 +27,12 @@ class User(Base):
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
+class CrawlLog(Base):
+    __tablename__ = "crawl_logs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ran_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
 class Bookmark(Base):
     __tablename__ = "bookmarks"
 

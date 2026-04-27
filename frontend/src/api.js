@@ -20,6 +20,10 @@ export async function fetchJob(id) {
   return handleResponse(await fetch(`${BASE}/jobs/${id}`))
 }
 
+export async function fetchCrawlStatus() {
+  return handleResponse(await fetch(`${BASE}/crawl/status`))
+}
+
 export async function triggerCrawl(token) {
   return handleResponse(await fetch(`${BASE}/crawl`, {
     method: 'POST',
