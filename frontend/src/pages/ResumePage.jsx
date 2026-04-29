@@ -409,7 +409,7 @@ function FilesSection({ resumeFilePath, portfolioFilePath, token }) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 2 }}>{type}</div>
         {filePath ? (
-          <div style={{ fontSize: 14, fontWeight: 600 }}>{basename(filePath)}</div>
+          <div style={{ fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{basename(filePath)}</div>
         ) : (
           <div style={{ fontSize: 13, color: 'var(--text-3)' }}>업로드된 파일 없음</div>
         )}
