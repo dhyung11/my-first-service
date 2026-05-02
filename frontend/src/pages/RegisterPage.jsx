@@ -40,7 +40,7 @@ export default function RegisterPage() {
       <div style={{ width: '100%', maxWidth: 400 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center', marginBottom: 32 }}>
           <span style={{ color: 'var(--accent)' }}><Icon.Logo size={22} /></span>
-          <span style={{ fontFamily: 'var(--font-en)', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>SecJobs</span>
+          <span style={{ fontFamily: 'var(--font-en)', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>Path Pilot</span>
         </div>
 
         <div style={{

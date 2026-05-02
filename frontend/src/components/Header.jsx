@@ -42,7 +42,7 @@ export default function Header({
           <Icon.Logo size={20} />
         </span>
         <span style={{ fontFamily: 'var(--font-en)', fontSize: 17, fontWeight: 700, letterSpacing: '-0.02em' }}>
-          SecJobs
+          Path Pilot
         </span>
         <div style={{ display: 'flex', gap: 2, marginLeft: 2 }}>
           {[

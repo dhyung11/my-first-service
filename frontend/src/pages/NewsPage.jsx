@@ -363,7 +363,7 @@ export default function NewsPage() {
             </button>
           )}
           <span style={{ color: 'var(--accent)', display: 'flex' }}><Icon.Logo size={20} /></span>
-          <span style={{ fontFamily: 'var(--font-en)', fontSize: 17, fontWeight: 700, letterSpacing: '-0.02em' }}>SecJobs</span>
+          <span style={{ fontFamily: 'var(--font-en)', fontSize: 17, fontWeight: 700, letterSpacing: '-0.02em' }}>Path Pilot</span>
           <div style={{ display: 'flex', gap: 2 }}>
             {[
               { to: '/',     label: isMobile ? '공고' : '채용 공고', active: false },
