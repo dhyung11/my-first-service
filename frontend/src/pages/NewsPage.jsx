@@ -267,6 +267,7 @@ export default function NewsPage() {
   const [dateFilter, setDateFilter] = useState('전체')
   const [query, setQuery] = useState('')
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   useEffect(() => {
     fetchNews()
@@ -337,7 +338,7 @@ export default function NewsPage() {
         position: 'sticky', top: 0, zIndex: 20,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {isMobile && (
+          {isMobile ? (
             <button
               onClick={() => setMobileFilterOpen(true)}
               style={{ width: 32, height: 32, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--r-sm)', color: 'var(--text-2)', position: 'relative' }}
@@ -347,6 +348,18 @@ export default function NewsPage() {
                 <path d="M3 5h12M5 9h8M7 13h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
               {hasActiveFilter && <span style={{ position: 'absolute', top: 4, right: 4, width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)' }} />}
+            </button>
+          ) : (
+            <button
+              onClick={() => setSidebarCollapsed(s => !s)}
+              style={{ width: 32, height: 32, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--r-sm)', color: 'var(--text-2)' }}
+              aria-label="사이드바 토글"
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <rect x="2.5" y="3" width="13" height="12" rx="2" stroke="currentColor" strokeWidth="1.4" />
+                <path d="M7 3v12" stroke="currentColor" strokeWidth="1.4" />
+                {!sidebarCollapsed && <rect x="2.5" y="3" width="4.5" height="12" fill="currentColor" opacity="0.15" />}
+              </svg>
             </button>
           )}
           <span style={{ color: 'var(--accent)', display: 'flex' }}><Icon.Logo size={20} /></span>
@@ -426,10 +439,15 @@ export default function NewsPage() {
         </div>
       </header>
 
-      <div style={{ flex: 1, display: isMobile ? 'block' : 'grid', gridTemplateColumns: '220px 1fr' }}>
+      <div style={{
+        flex: 1,
+        display: isMobile ? 'block' : 'grid',
+        gridTemplateColumns: isMobile ? '1fr' : (sidebarCollapsed ? '1fr' : '220px 1fr'),
+        transition: 'grid-template-columns 0.25s ease',
+      }}>
 
         {/* Desktop sidebar */}
-        {!isMobile && (
+        {!isMobile && !sidebarCollapsed && (
           <aside style={{ borderRight: '1px solid var(--border)', background: 'var(--surface)', position: 'sticky', top: 57, height: 'calc(100vh - 57px)', overflowY: 'auto' }}>
             <SidebarContent {...filterProps} />
           </aside>
