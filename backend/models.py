@@ -57,6 +57,18 @@ class CrawlLog(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     ran_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
+class News(Base):
+    __tablename__ = "news"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    url: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
+    source: Mapped[str] = mapped_column(String(50), nullable=False)
+    category: Mapped[str] = mapped_column(String(30), default='general')
+    summary: Mapped[Optional[str]] = mapped_column(Text)
+    published_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
 class Bookmark(Base):
     __tablename__ = "bookmarks"
 

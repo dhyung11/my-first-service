@@ -105,6 +105,17 @@ export async function uploadResumeFile(token, fileType, file) {
   }))
 }
 
+export async function fetchNews() {
+  return handleResponse(await fetch(`${BASE}/news`))
+}
+
+export async function triggerNewsFetch(token) {
+  return handleResponse(await fetch(`${BASE}/news/fetch`, {
+    method: 'POST',
+    headers: authHeader(token),
+  }))
+}
+
 export async function fetchProtectedFile(token, filePath) {
   const res = await fetch(`${BASE}/uploads/${filePath}`, { headers: authHeader(token) })
   if (!res.ok) return null

@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ResumePage from './pages/ResumePage'
 import ResumeEditPage from './pages/ResumeEditPage'
+import NewsPage from './pages/NewsPage'
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 640)
@@ -314,6 +315,7 @@ export default function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/resume" element={<ResumePage />} />
           <Route path="/resume/edit" element={<ResumeEditPage />} />
+          <Route path="/news" element={<NewsPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

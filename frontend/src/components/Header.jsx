@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Icon } from '../icons'
 import { useIsMobile } from '../utils'
 
@@ -10,6 +10,10 @@ export default function Header({
   onCrawl, crawling,
   user, onLogout,
 }) {
+  const location = useLocation()
+  const onJobs = location.pathname === '/' || location.pathname.startsWith('/jobs')
+  const onNews = location.pathname === '/news'
+
   return (
     <header style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -40,12 +44,23 @@ export default function Header({
         <span style={{ fontFamily: 'var(--font-en)', fontSize: 17, fontWeight: 700, letterSpacing: '-0.02em' }}>
           SecJobs
         </span>
-        {!isMobile && (
-          <>
-            <span style={{ color: 'var(--text-3)', fontSize: 16 }}>/</span>
-            <span style={{ fontSize: 14, color: 'var(--text-2)', fontWeight: 500 }}>전체 공고</span>
-          </>
-        )}
+        <div style={{ display: 'flex', gap: 2, marginLeft: 2 }}>
+          {[
+            { to: '/',     label: isMobile ? '공고' : '채용 공고', active: onJobs },
+            { to: '/news', label: isMobile ? '뉴스' : '보안 뉴스', active: onNews },
+          ].map(({ to, label, active }) => (
+            <Link key={to} to={to} style={{
+              fontSize: isMobile ? 11.5 : 13,
+              fontWeight: active ? 600 : 500,
+              color: active ? 'var(--text)' : 'var(--text-3)',
+              padding: isMobile ? '3px 7px' : '4px 10px',
+              borderRadius: 'var(--r-sm)',
+              background: active ? 'var(--surface-2)' : 'transparent',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+            }}>{label}</Link>
+          ))}
+        </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

@@ -55,6 +55,18 @@ class ResumeUpdate(BaseModel):
     languages: Optional[list[dict[str, Any]]] = None
     certifications: Optional[list[dict[str, Any]]] = None
 
+class NewsRead(BaseModel):
+    id: str
+    title: str
+    url: str
+    source: str
+    category: str
+    summary: Optional[str] = None
+    published_at: datetime
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
 class ResumeRead(ResumeUpdate):
     id: str
     user_id: str
