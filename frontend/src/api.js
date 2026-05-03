@@ -121,3 +121,36 @@ export async function fetchProtectedFile(token, filePath) {
   if (!res.ok) return null
   return URL.createObjectURL(await res.blob())
 }
+
+export async function fetchCertifications() {
+  return handleResponse(await fetch(`${BASE}/certifications`))
+}
+
+export async function fetchUserCerts(token) {
+  return handleResponse(await fetch(`${BASE}/user-certifications`, {
+    headers: authHeader(token),
+  }))
+}
+
+export async function addUserCert(token, data) {
+  return handleResponse(await fetch(`${BASE}/user-certifications`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeader(token) },
+    body: JSON.stringify(data),
+  }))
+}
+
+export async function updateUserCert(token, id, data) {
+  return handleResponse(await fetch(`${BASE}/user-certifications/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeader(token) },
+    body: JSON.stringify(data),
+  }))
+}
+
+export async function deleteUserCert(token, id) {
+  return handleResponse(await fetch(`${BASE}/user-certifications/${id}`, {
+    method: 'DELETE',
+    headers: authHeader(token),
+  }))
+}
