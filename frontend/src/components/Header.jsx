@@ -13,6 +13,7 @@ export default function Header({
   const location = useLocation()
   const onJobs = location.pathname === '/' || location.pathname.startsWith('/jobs')
   const onNews = location.pathname === '/news'
+  const onCerts = location.pathname === '/certs'
 
   return (
     <header style={{
@@ -46,8 +47,9 @@ export default function Header({
         </span>
         <div style={{ display: 'flex', gap: 2, marginLeft: 2 }}>
           {[
-            { to: '/',     label: isMobile ? '공고' : '채용 공고', active: onJobs },
-            { to: '/news', label: isMobile ? '뉴스' : '보안 뉴스', active: onNews },
+            { to: '/',      label: isMobile ? '공고' : '채용 공고', active: onJobs },
+            { to: '/news',  label: isMobile ? '뉴스' : '보안 뉴스', active: onNews },
+            { to: '/certs', label: '자격증',                        active: onCerts },
           ].map(({ to, label, active }) => (
             <Link key={to} to={to} style={{
               fontSize: isMobile ? 11.5 : 13,
