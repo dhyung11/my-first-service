@@ -6,12 +6,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from backend.database import init_db
-from backend.routers import jobs, crawl, auth, bookmarks, resume, news
+from backend.routers import jobs, crawl, auth, bookmarks, resume, news, certifications
+from backend.database import AsyncSessionLocal
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Path(os.getenv("UPLOAD_DIR", "./uploads")).mkdir(parents=True, exist_ok=True)
     await init_db()
+    async with AsyncSessionLocal() as db:
+        await certifications.seed_certifications(db)
     yield
 
 app = FastAPI(lifespan=lifespan)
@@ -29,6 +32,7 @@ app.include_router(auth.router)
 app.include_router(bookmarks.router)
 app.include_router(resume.router)
 app.include_router(news.router)
+app.include_router(certifications.router)
 
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(static_dir):
