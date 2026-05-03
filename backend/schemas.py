@@ -77,3 +77,54 @@ class ResumeRead(ResumeUpdate):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class CertificationRead(BaseModel):
+    id: str
+    name: str
+    category: str
+    issuer: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+
+class UserCertCreate(BaseModel):
+    cert_name: str
+    category: str
+    issuer: Optional[str] = None
+    status: str = 'not_started'
+    progress: int = 0
+    target_date: Optional[date] = None
+    acquired_date: Optional[date] = None
+    notes: Optional[str] = None
+    links: list[dict] = []
+
+
+class UserCertUpdate(BaseModel):
+    cert_name: Optional[str] = None
+    category: Optional[str] = None
+    issuer: Optional[str] = None
+    status: Optional[str] = None
+    progress: Optional[int] = None
+    target_date: Optional[date] = None
+    acquired_date: Optional[date] = None
+    notes: Optional[str] = None
+    links: Optional[list[dict]] = None
+
+
+class UserCertRead(BaseModel):
+    id: str
+    user_id: str
+    cert_name: str
+    category: str
+    issuer: Optional[str] = None
+    status: str
+    progress: int
+    target_date: Optional[date] = None
+    acquired_date: Optional[date] = None
+    notes: Optional[str] = None
+    links: list[dict] = []
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
