@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 from typing import Optional
-from sqlalchemy import String, Text, Date, DateTime, Boolean, ForeignKey, UniqueConstraint, JSON, func
+from sqlalchemy import String, Text, Date, DateTime, Boolean, ForeignKey, UniqueConstraint, JSON, Integer, func
 from sqlalchemy.orm import Mapped, mapped_column
 from backend.database import Base
 
@@ -78,3 +78,29 @@ class Bookmark(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     __table_args__ = (UniqueConstraint("user_id", "job_id"),)
+
+class Certification(Base):
+    __tablename__ = "certifications"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name: Mapped[str] = mapped_column(Text, nullable=False)
+    category: Mapped[str] = mapped_column(String(50), nullable=False)
+    issuer: Mapped[Optional[str]] = mapped_column(Text)
+
+
+class UserCertification(Base):
+    __tablename__ = "user_certifications"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    cert_name: Mapped[str] = mapped_column(Text, nullable=False)
+    category: Mapped[str] = mapped_column(String(50), nullable=False)
+    issuer: Mapped[Optional[str]] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(20), default='not_started', nullable=False)
+    progress: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    target_date: Mapped[Optional[date]] = mapped_column(Date)
+    acquired_date: Mapped[Optional[date]] = mapped_column(Date)
+    notes: Mapped[Optional[str]] = mapped_column(Text)
+    links: Mapped[list] = mapped_column(JSON, default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=datetime.utcnow)
